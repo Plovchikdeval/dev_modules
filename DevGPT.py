@@ -1,4 +1,4 @@
-__version__ = (0, 0, 6)
+__version__ = (0, 0, 3)
 
 """
   █ █▀█ █▄█ █ ▄█   █▀▄ █▀█ █▀▀
@@ -61,8 +61,8 @@ class DevGPT(loader.Module):
 		"no_server_respond": "Нет ответа от сервера",
 		"fetch_failed": "<blockquote>❌ <b>Не удалось получить данные</b></blockquote>",
 		"actual_version": "<blockquote>У вас актуальная версия DevGPT ({ver})</b></blockquote>",
-		"old_version": "<blockquote>У вас устаревшая версия DevGPT ({ver})</b></blockquote>",
-		"update_command": "<blockquote>Для обновления введите:</b> <code>{prefix}dlm {upd_file}</code>\n\n<b>Новая версия: {new_ver}<b></blockquote>",
+		"old_version": "<blockquote>У вас устаревшая версия DevGPT ({ver})</b>\n\n<b>Новая версия: {new_ver}<b></blockquote>",
+		"update_command": "<blockquote>Для обновления введите:</b> <code>{prefix}dlm {upd_file}</code></blockquote>",
 
 	}
 
@@ -248,7 +248,7 @@ class DevGPT(loader.Module):
 			await utils.answer(message, self.strings("actual_version").format(ver=correct_version_str))
 		else:
 			update_message = self.strings("old_version").format(ver=correct_version_str, new_ver=new_version)
-			update_message += self.strings("update_command").format(upd_file=f"{self.prefix}{self.repo}/{local_file.name}")
+			update_message += self.strings("update_command").format(prefix=self.prefix, upd_file=f"{self.repo}/{local_file.name}")
 			await utils.answer(message, update_message)
 
 
