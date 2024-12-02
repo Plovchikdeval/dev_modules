@@ -1,4 +1,4 @@
-__version__ = (1, 0, 2)
+__version__ = (1, 0, 3)
 
 """
   █ █▀█ █▄█ █ ▄█   █▀▄ █▀█ █▀▀
@@ -43,7 +43,7 @@ class DevGPT(loader.Module):
 		"fetch_failed": "<blockquote>❌ <b>Fetching data failed</b></blockquote>",
 		"actual_version": "<blockquote>You have actual DevGPT ({ver})</b></blockquote>",
 		"old_version": "<blockquote>You have old DevGPT ({ver}) </b></blockquote>",
-		"update_command": "<blockquote>To update type:</b> <code> {prefix}dlm {upd_file}</code>\n\n<b>New version: {new_ver}<b></blockquote>",
+		"update_command": "<blockquote>To update type:</b> <code> {prefix}dlm {upd_file}</code>\n\n<b>New version: {new_ver} <b></blockquote>",
 	}
 
 
@@ -61,7 +61,7 @@ class DevGPT(loader.Module):
 		"no_server_respond": "Нет ответа от сервера",
 		"fetch_failed": "<blockquote>❌ <b>Не удалось получить данные</b></blockquote>",
 		"actual_version": "<blockquote>У вас актуальная версия DevGPT ({ver})</b></blockquote>",
-		"old_version": "<blockquote>У вас устаревшая версия DevGPT ({ver}) </b>\n\n<b>Новая версия: {new_ver}<b></blockquote>",
+		"old_version": "<blockquote>У вас устаревшая версия DevGPT ({ver}) </b>\n\n<b>Новая версия: {new_ver} <b></blockquote>",
 		"update_command": "<blockquote>Для обновления введите:</b> <code> {prefix}dlm {upd_file}</code></blockquote>",
 
 	}
