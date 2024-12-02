@@ -1,4 +1,4 @@
-__version__ = (1, 0, 3)
+__version__ = (1, 0, 4)
 
 """
   █ █▀█ █▄█ █ ▄█   █▀▄ █▀█ █▀▀
@@ -17,6 +17,7 @@ import os
 import inspect
 import aiohttp
 import json
+import requests
 
 from telethon.tl.types import Message
 
@@ -69,7 +70,9 @@ class DevGPT(loader.Module):
 
 	async def client_ready(self, client, _):
 		self.server_url = "https://api.vysssotsky.ru"
-		self.additional_server_url = "http://theksenon.pro/api/flux/generate"
+		self.flux_server_url = "http://theksenon.pro/api/flux/generate"
+		self.additional_server_url = "http://146.19.48.160:25701/generate_image"
+
 		# self.api_key = self.config["api_key"]
 		self.api_key = "xxx"
 
@@ -80,7 +83,8 @@ class DevGPT(loader.Module):
 
 		self.text_models = ["gpt-4", "gpt-4-turbo", "gpt-4o", "gpt-4o-mini", "o1-preview", "hermes-2-pro", "phi-2", "gemini-pro", "gemini-flash", "gemma-2b", "claude-3-haiku", "claude-3.5-sonnet", "blackboxai", "llava-13b", "openchat-3.5", "sonar-chat", "german-7b", "any-uncensored"]
 		self.image_models = ["sd-3", "flux-pro", "flux-realism", "flux-anime", "flux-disney", "flux-pixel", "flux-4o", "any-dark"]
-		self.additional_image_models = ["flux-pro", "flux-realism", "flux-anime", "flux-disney", "flux-pixel", "flux-4o"]
+		self.flux_image_models = ["flux-pro", "flux-realism", "flux-anime", "flux-disney", "flux-pixel", "flux-4o"]
+		self.additional_image_models = ["anything-v5", "dreamshaper-v6", "dreamshaper-v5", "meina-v9"]
 
 	async def generate_text(self, message, args):
 		model = args.split()[0]
@@ -154,15 +158,15 @@ class DevGPT(loader.Module):
 							else:
 								await utils.answer(message, self.strings("image_err").format(error=self.strings("no_url")))
 						else:
-							logger.error("API down! Trying to use another one.", exc_info=True)
-							if model in self.additional_image_models:
+							logger.error("Flux API down! Trying to use another one.", exc_info=True)
+							if model in self.flux_image_models:
 								model = f"{model} is down used <i>flux-pro-mv</i> instead"
 								headers = {"Content-Type": "application/json"}
 								data = {"prompt": prompt}
 
 								try:
 									async with aiohttp.ClientSession() as session:
-										async with session.post(self.additional_server_url, headers=headers, json=data) as response:
+										async with session.post(self.flux_server_url, headers=headers, json=data) as response:
 											response.raise_for_status()
 											data = await response.text()
 											try:
@@ -184,8 +188,31 @@ class DevGPT(loader.Module):
 									await utils.answer(message, self.strings("server_err").format(error=str(e)))
 							else:
 								await utils.answer(message, self.strings("image_err").format(error=f"HTTP {response.status}"))
+
 			except Exception as e:
 				await utils.answer(message, self.strings("image_err").format(error=str(e)))
+		elif model in self.additional_image_models:
+			try:
+				data = {
+				"prompt": prompt,
+				"model": model
+				}
+				headers = {"Content-Type": "application/json"}
+				response = requests.post(self.additional_server_url, json=data, headers=headers)
+				response.raise_for_status()
+				result = response.json()
+				image_url = result.get("image_url", "")
+				image_response = requests.get(image_url)
+
+				image = io.BytesIO(image_response.content)
+				image.name = "generated_image.png"
+
+				await self._client.send_file(message.chat_id,image, caption=(self.strings("quest_img").format(img_url=image_url, prmpt=prompt, mdl=model)))
+				await message.delete()
+			except requests.exceptions.RequestException as e:
+				await utils.answer(message, self.strings("image_err").format(error=e))
+			except Exception as e:
+				await utils.answer(message, self.strings("image_err").format(error=e))
 		else:
 			await utils.answer(message, self.strings("model_not_found").format(prefix=self.prefix))
 
@@ -216,8 +243,9 @@ class DevGPT(loader.Module):
 	@loader.command(en_doc="Display models list", ru_doc="Показать список моделей")
 	async def dgmodels(self, message: Message):
 		"""Display models list"""
+		combined_list = self.image_models + self.additional_image_models
 		t_mdl = '\n'.join(self.text_models)
-		i_mdl = '\n'.join(self.image_models)
+		i_mdl = '\n'.join(combined_list)
 		await utils.answer(message, self.strings("models_list").format(txt_models=t_mdl, img_models=i_mdl))
 
 	@loader.command(en_doc="Check for updates", ru_doc="Проверить обновления")
