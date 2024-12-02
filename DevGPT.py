@@ -1,4 +1,4 @@
-__version__ = (0, 0, 1)
+__version__ = (0, 0, 2)
 
 """
   █ █▀█ █▄█ █ ▄█   █▀▄ █▀█ █▀▀
@@ -13,6 +13,7 @@ __version__ = (0, 0, 1)
 import logging
 import io
 import os
+import inspect
 import aiohttp
 import json
 
@@ -39,6 +40,10 @@ class DevGPT(loader.Module):
 		"model_not_found": "<blockquote>⛔️ <b>Model not found! List of available models: {prefix}dgmodels</b></blockquote>",
 		"no_url": "No image URL received",
 		"no_server_respond": "No response from the server",
+		"fetch_failed": "<blockquote>❌ <b>Fetching data failed</b></blockquote>",
+		"actual_version": "<blockquote>You have actual DevGPT ({ver})</b></blockquote>",
+		"old_version": "<blockquote>You have old DevGPT ({ver})</b></blockquote>",
+		"update_command": "<blockquote>To update type:</b> <code>{prefix}dlm {upd_file}</code>\n\n<b>New version: {new_ver}<b></blockquote>",
 	}
 
 
@@ -54,6 +59,11 @@ class DevGPT(loader.Module):
 		"model_not_found": "<blockquote>⛔️ <b>Модель не найдена! Список доступных моделей {prefix}dgmodels</b></blockquote>",
 		"no_url": "Не получен URL изображения",
 		"no_server_respond": "Нет ответа от сервера",
+		"fetch_failed": "<blockquote>❌ <b>Не удалось получить данные</b></blockquote>",
+		"actual_version": "<blockquote>У вас актуальная версия DevGPT ({ver})</b></blockquote>",
+		"old_version": "<blockquote>У вас устаревшая версия DevGPT ({ver})</b></blockquote>",
+		"update_command": "<blockquote>Для обновления введите:</b> <code>{prefix}dlm {upd_file}</code>\n\n<b>Новая версия: {new_ver}<b></blockquote>",
+
 	}
 
 	async def client_ready(self, client, _):
@@ -61,6 +71,8 @@ class DevGPT(loader.Module):
 		self.additional_server_url = "http://theksenon.pro/api/flux/generate"
 		# self.api_key = self.config["api_key"]
 		self.api_key = "xxx"
+
+		self.repo = "https://raw.githubusercontent.com/Plovchikdeval/dev_modules/main"
 
 		self._client = client
 		self.prefix = self._client.loader.get_prefix()
@@ -206,3 +218,38 @@ class DevGPT(loader.Module):
 		t_mdl = '\n'.join(self.text_models)
 		i_mdl = '\n'.join(self.image_models)
 		await utils.answer(message, self.strings("models_list").format(txt_models=t_mdl, img_models=i_mdl))
+
+	@loader.command(en_doc="Check for updates", ru_doc="Проверить обновления")
+	async def dgcheck(self, message: Message):
+		module_name = self.strings("name")
+		module = self.lookup(module_name)
+		sys_module = inspect.getmodule(module)
+
+		local_file = io.BytesIO(sys_module.__loader__.data)
+		local_file.name = f"{module_name}.py"
+		local_file.seek(0)
+		local_first_line = local_file.readline().strip().decode("utf-8")
+
+		correct_version = sys_module.__version__
+		correct_version_str = ".".join(map(str, correct_version))
+
+		async with aiohttp.ClientSession() as session:
+			async with session.get(f"{self.repo}/{local_file.name}") as response:
+				if response.status == 200:
+					remote_content = await response.text()
+					remote_lines = remote_content.splitlines()
+
+					new_version = remote_lines[0].split("=", 1)[1].strip().strip("()").replace(",", "").replace(" ", ".")
+				else:
+					await utils.answer(message, self.strings("fetch_failed"))
+					return
+
+		if local_first_line.replace(" ", "") == remote_lines[0].strip().replace(" ", ""):
+			await utils.answer(message, self.strings("actual_version").format(ver=correct_version_str))
+		else:
+			update_message = self.strings("old_version").format(ver=correct_version_str, new_ver=new_version)
+			update_message += self.strings("update_command").format(upd_file=f"{self.prefix}{self.repo}/{local_file.name}")
+			await utils.answer(message, update_message)
+
+
+
