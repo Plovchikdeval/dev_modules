@@ -1,4 +1,4 @@
-__version__ = (1, 0, 6)
+__version__ = (1, 0, 7)
 
 """
   █ █▀█ █▄█ █ ▄█   █▀▄ █▀█ █▀▀
@@ -207,7 +207,7 @@ class DevGPT(loader.Module):
 		else:
 			await utils.answer(message, self.strings("model_not_found").format(prefix=self.prefix))
 
-	@loader.command(en_doc="Ask gpt for something", ru_doc="Спросите gpt о чем-нибудь")
+	@loader.command(en_doc="Ask gpt for something", ru_doc="Спросите gpt о чем-нибудь", ua_doc="Запитайте gpt про щось")
 	async def dgptcmd(self, message: Message):
 		"""Ask gpt for something"""
 		args = utils.get_args_raw(message)
@@ -219,7 +219,7 @@ class DevGPT(loader.Module):
 
 		await self.generate_text(message, args)
 
-	@loader.command(en_doc="Generate image", ru_doc="Сгенерировать изображение")
+	@loader.command(en_doc="Generate image", ru_doc="Сгенерировать изображение", ua_doc="Згенерувати зображення")
 	async def dimg(self, message: Message):
 		"""Generate image"""
 		args = utils.get_args_raw(message)
@@ -231,7 +231,7 @@ class DevGPT(loader.Module):
 
 		await self.generate_image(message, args)
 
-	@loader.command(en_doc="Display models list", ru_doc="Показать список моделей")
+	@loader.command(en_doc="Display models list", ru_doc="Показать список моделей", ua_doc="Показати список моделей")
 	async def dgmodels(self, message: Message):
 		"""Display models list"""
 		combined_list = self.image_models + self.additional_image_models
@@ -239,7 +239,7 @@ class DevGPT(loader.Module):
 		i_mdl = '\n'.join(combined_list)
 		await utils.answer(message, self.strings("models_list").format(txt_models=t_mdl, img_models=i_mdl))
 
-	@loader.command(en_doc="Check for updates", ru_doc="Проверить обновления")
+	@loader.command(en_doc="Check for updates", ru_doc="Проверить обновления", ua_doc="Перевірити оновлення")
 	async def dgcheck(self, message: Message):
 		"""Check for updates"""
 		module_name = self.strings("name")
