@@ -1,4 +1,4 @@
-__version__ = (1, 0, 5)
+__version__ = (1, 0, 6)
 
 """
   █ █▀█ █▄█ █ ▄█   █▀▄ █▀█ █▀▀
@@ -47,6 +47,7 @@ class DevGPT(loader.Module):
 		"actual_version": "<blockquote>You have actual DevGPT ({ver})</b></blockquote>",
 		"old_version": "<blockquote>You have old DevGPT ({ver}) </b></blockquote>",
 		"update_command": "<blockquote>To update type:</b> <code> {prefix}dlm {upd_file}</code>\n\n<b>New version: {new_ver} <b></blockquote>",
+		"ban": "<blockquote>❌ You banned! Reason: {reason}</blockquote>",
 	}
 
 	strings_ua = {
@@ -83,15 +84,15 @@ class DevGPT(loader.Module):
 		"actual_version": "<blockquote>У вас актуальная версия DevGPT ({ver})</b></blockquote>",
 		"old_version": "<blockquote>У вас устаревшая версия DevGPT ({ver}) </b>\n\n<b>Новая версия: {new_ver} <b></blockquote>",
 		"update_command": "<blockquote>Для обновления введите:</b> <code> {prefix}dlm {upd_file}</code></blockquote>",
+		"ban": "<blockquote>❌ Вы забанены! По причине: {reason}</blockquote>",
 
 	}
 
 	async def client_ready(self, client, _):
-		self.server_url = "https://api.vysssotsky.ru"
-		self.flux_server_url = "http://theksenon.pro/api/flux/generate"
+		# self.server_url = "https://api.vysssotsky.ru"
+		self.server_url = "https://v1.vysssotsky.ru/v1/{model_name}/generate"
 		self.additional_server_url = "http://146.19.48.160:25701/generate_image"
 
-		# self.api_key = self.config["api_key"]
 		self.api_key = "xxx"
 
 		self.repo = "https://raw.githubusercontent.com/Plovchikdeval/dev_modules/main"
@@ -101,14 +102,13 @@ class DevGPT(loader.Module):
 
 		self.text_models = ["gpt-4", "gpt-4-turbo", "gpt-4o", "gpt-4o-mini", "o1-preview", "hermes-2-pro", "phi-2", "gemini-pro", "gemini-flash", "gemma-2b", "claude-3-haiku", "claude-3.5-sonnet", "blackboxai", "llava-13b", "openchat-3.5", "sonar-chat", "german-7b", "any-uncensored"]
 		self.image_models = ["sd-3", "flux-pro", "flux-realism", "flux-anime", "flux-disney", "flux-pixel", "flux-4o", "any-dark"]
-		self.flux_image_models = ["flux-pro", "flux-realism", "flux-anime", "flux-disney", "flux-pixel", "flux-4o"]
 		self.additional_image_models = ["anything-v5", "dreamshaper-v6", "dreamshaper-v5", "meina-v9"]
 
 	async def generate_text(self, message, args):
 		model = args.split()[0]
 		content = args.replace(model, "").strip()
 
-		if len(content) == 0:
+		if len(content) <= 1:
 			await utils.answer(message, self.strings("query_err"))
 			return
 
@@ -142,21 +142,18 @@ class DevGPT(loader.Module):
 		model = args.split()[0]
 		prompt = args.replace(model, "").strip()
 
-		if len(prompt) == 0:
+		if len(prompt) <= 1:
 			await utils.answer(message, self.strings("query_err"))
 			return
 
 		if model in self.image_models:
 			try:
 				payload = {
-					"model": model,
-					"prompt": prompt,
-					"n": 1,
-					"size": "1000x700",
+					"prompt": prompt
 				}
 
 				async with aiohttp.ClientSession() as session:
-					async with session.post(f"{self.server_url}/v1/images/generate", headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}, data=json.dumps(payload)) as response:
+					async with session.post(self.server_url.format(model_name=model), headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}, data=json.dumps(payload)) as response:
 						if response.status == 200:
 							data = await response.json()
 							image_url = data.get("data", [{}])[0].get("url", None)
@@ -175,37 +172,11 @@ class DevGPT(loader.Module):
 										os.remove(file_name)
 							else:
 								await utils.answer(message, self.strings("image_err").format(error=self.strings("no_url")))
+						elif response.status == 403:
+							ban_reason = data.get("reason")
+							await utils.answer(message, self.strings("ban").format(reason=ban_reason))
 						else:
-							logger.error("Flux API down! Trying to use another one.", exc_info=True)
-							if model in self.flux_image_models:
-								model = f"{model} is down used <i>flux-pro-mv</i> instead"
-								headers = {"Content-Type": "application/json"}
-								data = {"prompt": prompt}
-
-								try:
-									async with aiohttp.ClientSession() as session:
-										async with session.post(self.flux_server_url, headers=headers, json=data) as response:
-											response.raise_for_status()
-											data = await response.text()
-											try:
-												data = json.loads(data)
-												image_url = data.get("image_url")
-											except json.JSONDecodeError:
-												image_url = data.strip()
-
-											async with session.get(image_url) as image_response:
-												image_response.raise_for_status()
-												image_content = io.BytesIO(await image_response.read())
-										await message.delete()
-										await self._client.send_file(message.chat_id, image_content, caption=(self.strings("quest_img").format(img_url=image_url, prmpt=prompt, mdl=model))
-											)
-
-								except aiohttp.ClientResponseError as e:
-									await utils.answer(message, self.strings("server_err").format(error=str(e)))
-								except Exception as e:
-									await utils.answer(message, self.strings("server_err").format(error=str(e)))
-							else:
-								await utils.answer(message, self.strings("image_err").format(error=f"HTTP {response.status}"))
+							await utils.answer(message, self.strings("image_err").format(error=f"HTTP {response.status}"))
 
 			except Exception as e:
 				await utils.answer(message, self.strings("image_err").format(error=str(e)))
@@ -268,6 +239,7 @@ class DevGPT(loader.Module):
 
 	@loader.command(en_doc="Check for updates", ru_doc="Проверить обновления")
 	async def dgcheck(self, message: Message):
+		"""Check for updates"""
 		module_name = self.strings("name")
 		module = self.lookup(module_name)
 		sys_module = inspect.getmodule(module)
