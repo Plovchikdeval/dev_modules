@@ -10,14 +10,15 @@ __version__ = (0, 0, 9)
 # scope: hikka_min 1.3.3
 # meta developer: @djmodules
 # meta banner: https://kappa.lol/--YNb
+# requires: requests
 
 import logging
 import io
 import os
 import random
 import json
-
 import requests
+
 from telethon.tl.types import Message
 
 from .. import loader, utils

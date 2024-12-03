@@ -10,6 +10,7 @@ __version__ = (1, 0, 5)
 # scope: hikka_min 1.3.3
 # meta developer: @djmodules
 # meta banner: https://kappa.lol/nfF_A
+# requires: requests
 
 import logging
 import io
