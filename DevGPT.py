@@ -65,7 +65,7 @@ class DevGPT(loader.Module):
 		"fetch_failed": "<blockquote>❌ <b>Не вдалося отримати дані</b></blockquote>",
 		"actual_version": "<blockquote>У вас актуальна версія DevGPT ({ver})</b></blockquote>",
 		"old_version": "<blockquote>У вас застаріла версія DevGPT ({ver}) </b>\n\n<b>Нова версія: {new_ver} <b></blockquote>",
-		"update_command": "<blockquote>Для оновлення введіть:</b> <code> {prefix}dlm {upd_file}</code></blockquote>"
+		"update_command": "<blockquote>Для оновлення введіть:</b> <code> {prefix}dlm {upd_file}</code></blockquote>",
 		"ban": "<blockquote>❌ Вас забанено! З причини: {reason}</blockquote>",
 	}
 
