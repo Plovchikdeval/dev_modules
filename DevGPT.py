@@ -47,7 +47,7 @@ class DevGPT(loader.Module):
 		"actual_version": "<blockquote>You have actual DevGPT ({ver})</b></blockquote>",
 		"old_version": "<blockquote>You have old DevGPT ({ver}) </b></blockquote>",
 		"update_command": "<blockquote>To update type:</b> <code> {prefix}dlm {upd_file}</code>\n\n<b>New version: {new_ver} <b></blockquote>",
-		"ban": "<blockquote>❌ You banned! Reason: {reason}</blockquote>",
+		"ban": "<blockquote>❌ You are banned! Reason: {reason}</blockquote>",
 	}
 
 	strings_ua = {
@@ -66,6 +66,7 @@ class DevGPT(loader.Module):
 		"actual_version": "<blockquote>У вас актуальна версія DevGPT ({ver})</b></blockquote>",
 		"old_version": "<blockquote>У вас застаріла версія DevGPT ({ver}) </b>\n\n<b>Нова версія: {new_ver} <b></blockquote>",
 		"update_command": "<blockquote>Для оновлення введіть:</b> <code> {prefix}dlm {upd_file}</code></blockquote>"
+		"ban": "<blockquote>❌ Вас забанено! З причини: {reason}</blockquote>",
 	}
 
 	strings_ru = {
@@ -85,12 +86,12 @@ class DevGPT(loader.Module):
 		"old_version": "<blockquote>У вас устаревшая версия DevGPT ({ver}) </b>\n\n<b>Новая версия: {new_ver} <b></blockquote>",
 		"update_command": "<blockquote>Для обновления введите:</b> <code> {prefix}dlm {upd_file}</code></blockquote>",
 		"ban": "<blockquote>❌ Вы забанены! По причине: {reason}</blockquote>",
-
 	}
 
 	async def client_ready(self, client, _):
 		# self.server_url = "https://api.vysssotsky.ru"
-		self.server_url = "https://v1.vysssotsky.ru/v1/{model_name}/generate"
+		self.server_url = "https://api.vysssotsky.ru/"
+		self.server_url_images = "https://v1.vysssotsky.ru/v1/{model_name}/generate"
 		self.additional_server_url = "http://146.19.48.160:25701/generate_image"
 
 		self.api_key = "xxx"
@@ -153,7 +154,7 @@ class DevGPT(loader.Module):
 				}
 
 				async with aiohttp.ClientSession() as session:
-					async with session.post(self.server_url.format(model_name=model), headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}, data=json.dumps(payload)) as response:
+					async with session.post(self.server_url_images.format(model_name=model), headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}, data=json.dumps(payload)) as response:
 						if response.status == 200:
 							data = await response.json()
 							image_url = data.get("data", [{}])[0].get("url", None)
