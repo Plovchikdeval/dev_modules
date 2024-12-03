@@ -1,4 +1,4 @@
-__version__ = (0, 0, 9)
+__version__ = (1, 0, 0)
 
 """
   █ █▀█ █▄█ █ ▄█   █▀▄ █▀█ █▀▀
@@ -86,7 +86,7 @@ class UploaderMod(loader.Module):
         return file
 
     @loader.sudo
-    @loader.command()
+    @loader.command(en_doc="Upload file", ru_doc="Загрузить файл", ua_doc="Завантажити файл")
     async def oxload(self, message: Message):
         """Upload file"""
         file = await self.get_media(message)
