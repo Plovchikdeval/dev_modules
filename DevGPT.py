@@ -48,6 +48,23 @@ class DevGPT(loader.Module):
 		"update_command": "<blockquote>To update type:</b> <code> {prefix}dlm {upd_file}</code>\n\n<b>New version: {new_ver} <b></blockquote>",
 	}
 
+	strings_ua = {
+		"wait": "<blockquote>🤖 <b>Сервер обробляє запит, будь ласка, зачекайте...</b></blockquote>",
+		"quest": "\n\n\n<blockquote>💭 <b>Ваш запит:</b> {args}</blockquote>",
+		"quest_img": "<blockquote><b>🔗 Посилання: <a href='{img_url}'>зображення</a></b></blockquote>\n\n<blockquote>💭 <b>Запит:</b> <code>{prmpt}</code></blockquote>\n\n<blockquote>🤖 <b>Модель:</b> <code>{mdl}</code></blockquote>",
+		"args_err": "<blockquote>ℹ️ <b>Використання {prefix}dgpt/dgimg <модель> <запит></b></blockquote>",
+		"query_err": "<blockquote>⛔️ <b>Запит не може бути порожнім!</b></blockquote>",
+		"server_err": "<blockquote>⚠️ <b>Помилка сервера: {error}</b></blockquote>",
+		"image_err": "⚠️ <b>Помилка при генерації зображення: {error}</b>",
+		"models_list": "<blockquote>📝 <b>Текст</b></blockquote>\n\n<blockquote>{txt_models}</blockquote>\n\n<blockquote>🖼 <b>Зображення</b></blockquote>\n\n<blockquote>{img_models}</blockquote>",
+		"model_not_found": "<blockquote>⛔️ <b>Модель не знайдена! Список доступних моделей {prefix}dgmodels</b></blockquote>",
+		"no_url": "Не отримано URL зображення",
+		"no_server_respond": "Немає відповіді від сервера",
+		"fetch_failed": "<blockquote>❌ <b>Не вдалося отримати дані</b></blockquote>",
+		"actual_version": "<blockquote>У вас актуальна версія DevGPT ({ver})</b></blockquote>",
+		"old_version": "<blockquote>У вас застаріла версія DevGPT ({ver}) </b>\n\n<b>Нова версія: {new_ver} <b></blockquote>",
+		"update_command": "<blockquote>Для оновлення введіть:</b> <code> {prefix}dlm {upd_file}</code></blockquote>"
+	}
 
 	strings_ru = {
 		"wait": "<blockquote>🤖 <b>Сервер обрабатывает запрос, подождите...</b></blockquote>",
