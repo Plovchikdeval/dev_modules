@@ -36,6 +36,14 @@ class UploaderMod(loader.Module):
         "err": "<emoji document_id=5472267631979405211>🚫</emoji> <b>Upload error</b>",
         "uploaded": "<emoji document_id=5226711870492126219>🎡</emoji> <b>File uploaded!</b>\n\n<code>{link_to_file}</code>",
     }
+
+    strings_ua = {
+        "uploading": "<emoji document_id=5451732530048802485>⏳</emoji> <b>Завантаження...</b>",
+        "noargs": "<emoji document_id=5472267631979405211>🚫</emoji> <b>Файл не вказано</b>",
+        "err": "<emoji document_id=5472267631979405211>🚫</emoji> <b>Помилка завантаження</b>",
+        "uploaded": "<emoji document_id=5226711870492126219>🎡</emoji> <b>Файл завантажено!</b>\n\n<code>{link_to_file}</code>",
+    }
+
     strings_ru = {
         "uploading": "<emoji document_id=5451732530048802485>⏳</emoji> <b>Загрузка...</b>",
         "noargs": "<emoji document_id=5472267631979405211>🚫</emoji> <b>Файл не указан</b>",
