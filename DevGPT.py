@@ -173,7 +173,8 @@ class DevGPT(loader.Module):
 							else:
 								await utils.answer(message, self.strings("image_err").format(error=self.strings("no_url")))
 						elif response.status == 403:
-							ban_reason = data.get("reason")
+							err_data = await response.json()
+							ban_reason = err_data.get("reason")
 							await utils.answer(message, self.strings("ban").format(reason=ban_reason))
 						else:
 							await utils.answer(message, self.strings("image_err").format(error=f"HTTP {response.status}"))
