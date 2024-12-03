@@ -1,4 +1,4 @@
-__version__ = (0, 0, 7)
+__version__ = (0, 0, 9)
 
 """
   █ █▀█ █▄█ █ ▄█   █▀▄ █▀█ █▀▀
@@ -11,39 +11,39 @@ __version__ = (0, 0, 7)
 # meta developer: @djmodules
 # meta banner: https://kappa.lol/--YNb
 
+import logging
 import io
 import os
 import random
 import json
 
-from requests import post
+import requests
 from telethon.tl.types import Message
 
 from .. import loader, utils
 
+logger = logging.getLogger(__name__)
 
 @loader.tds
-class KappaMod(loader.Module):
-    """Загрузка на аналог 0x.at"""
+class UploaderMod(loader.Module):
+    """Загрузка на зеркало 0x.at"""
 
     strings = {
         "name": "Uploader",
-        "uploading": "<emoji document_id=5274168450204316527>🛸</emoji> <b>Uploading...</b>",
-        "noargs": "<emoji document_id=5872829476143894491>🚫</emoji> <b>No file specified</b>",
-        "err": "<emoji document_id=5872829476143894491>🚫</emoji> <b>Upload error</b>",
-        "uploaded": "<emoji document_id=5123163417326126159>✅</emoji> <b>File uploaded!</b>",
-        "link": "<emoji document_id=5877465816030515018>🔗</emoji> <b>Link:</b>",
+        "uploading": "<emoji document_id=5451732530048802485>⏳</emoji> <b>Uploading...</b>",
+        "noargs": "<emoji document_id=5472267631979405211>🚫</emoji> <b>No file specified</b>",
+        "err": "<emoji document_id=5472267631979405211>🚫</emoji> <b>Upload error</b>",
+        "uploaded": "<emoji document_id=5226711870492126219>🎡</emoji> <b>File uploaded!</b>\n\n<code>{link_to_file}</code>",
     }
     strings_ru = {
-        "uploading": "<emoji document_id=5274168450204316527>🛸</emoji> <b>Загрузка...</b>",
-        "noargs": "<emoji document_id=5872829476143894491>🚫</emoji> <b>Файл не указан</b>",
-        "err": "<emoji document_id=5872829476143894491>🚫</emoji> <b>Ошибка загрузки</b>",
-        "uploaded": "<emoji document_id=5123163417326126159>✅</emoji> <b>Файл загружен!</b>",
-        "link": "<emoji document_id=5877465816030515018>🔗</emoji> <b>Ссылка:</b>",
+        "uploading": "<emoji document_id=5451732530048802485>⏳</emoji> <b>Загрузка...</b>",
+        "noargs": "<emoji document_id=5472267631979405211>🚫</emoji> <b>Файл не указан</b>",
+        "err": "<emoji document_id=5472267631979405211>🚫</emoji> <b>Ошибка загрузки</b>",
+        "uploaded": "<emoji document_id=5226711870492126219>🎡</emoji> <b>Файл загружен!</b>\n\n<code>{link_to_file}</code>",
     }
 
-    async def client_ready(self, client, db):
-        self.client = client
+    async def client_ready(self, client, _):
+        self._client = client
         
     async def get_media(self, message: Message):
         reply = await message.get_reply_message()
@@ -77,21 +77,22 @@ class KappaMod(loader.Module):
         return file
 
     @loader.sudo
-    async def Loadcmd(self, message: Message):
-        """upload file"""
+    @loader.command()
+    async def oxload(self, message: Message):
+        """Upload file"""
         file = await self.get_media(message)
         if not file:
             return
         
-        await message.edit(self.strings("uploading"))
+        await utils.answer(message, self.strings("uploading"))
         
         try:
-            # Загружаем файл на сервер
-            devup = post("http://ndpropave5.temp.swtest.ru", files={"file": file})
-        except ConnectionError:
-            await message.edit(self.strings("err"))
+            devup = requests.post("http://ndpropave5.temp.swtest.ru", files={"file": file})
+        except ConnectionError as e:
+            logger.error(f"File uploading error: {e}", exc_info=True)
+            await utils.answer(message, self.strings("err"))
             return
         
-        resp = devup.text
+        link = devup.text
  
-        await message.edit(f'{self.strings("link")} {resp}')
+        await utils.answer(message, self.strings("uploaded").format(link_to_file=link))
