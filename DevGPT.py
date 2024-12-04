@@ -186,7 +186,7 @@ class DevGPT(loader.Module):
 
 								try:
 									image_v2 = json.loads(image_v2)
-									image_v2_url = image_v2.get("image_url")
+									image_v2_url = image_v2.get("link")
 								except json.JSONDecodeError:
 									image_v2_url = image_v2.strip()
 
