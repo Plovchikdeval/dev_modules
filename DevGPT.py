@@ -180,7 +180,7 @@ class DevGPT(loader.Module):
 								"model": model,
 								"prompt": prompt
 							}
-							async with session.post(self.server_url_images_v2, headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}, data=json.dumps(payload_v2)) as response_v2:
+							async with session.post(self.server_url_images_v2, headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}, data=payload_v2) as response_v2:
 								response_v2.raise_for_status()
 								image_v2 = await response_v2.text()
 
