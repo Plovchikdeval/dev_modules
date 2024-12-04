@@ -1,4 +1,4 @@
-__version__ = (1, 0, 7)
+__version__ = (1, 0, 8)
 
 """
   █ █▀█ █▄█ █ ▄█   █▀▄ █▀█ █▀▀
@@ -92,9 +92,10 @@ class DevGPT(loader.Module):
 		# self.server_url = "https://api.vysssotsky.ru"
 		self.server_url = "https://api.vysssotsky.ru/"
 		self.server_url_images = "https://v1.vysssotsky.ru/v1/{model_name}/generate"
+		self.server_url_images_v2 = "https://v2.vysssotsky.ru/v1/generate"
 		self.additional_server_url = "http://146.19.48.160:25701/generate_image"
 
-		self.api_key = "xxx"
+		self.api_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
 
 		self.repo = "https://raw.githubusercontent.com/Plovchikdeval/dev_modules/main"
 
@@ -173,6 +174,22 @@ class DevGPT(loader.Module):
 										os.remove(file_name)
 							else:
 								await utils.answer(message, self.strings("image_err").format(error=self.strings("no_url")))
+						elif model not in ["sd-3", "any-dark"]:
+							async with session.post(self.server_url_images_v2, headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}, data=json.dumps(payload)) as response_v2:
+								response_v2.raise_for_status()
+								image_v2 = await response_v2.text()
+								
+								try:
+									image_v2 = json.loads(image_v2)
+									image_v2_url = image_v2.get("image_url")
+								except json.JSONDecodeError:
+									image_v2_url = image_v2.strip()
+
+								async with session.get(image_v2_url) as image_v2_response:
+									image_v2_response.raise_for_status()
+									image_v2_content = io.BytesIO(await image_v2_response.read())
+							await message.delete()
+							await self._client.send_file(message.chat_id, image_v2_content, caption=(self.strings('quest_img').format(img_url=image_v2_url, prmpt=prompt, mdl=model)))
 						elif response.status == 403:
 							err_data = await response.json()
 							ban_reason = err_data.get("reason")
