@@ -1,4 +1,4 @@
-__version__ = (1, 0, 8)
+__version__ = (1, 0, 9)
 
 """
   █ █▀█ █▄█ █ ▄█   █▀▄ █▀█ █▀▀
@@ -174,7 +174,7 @@ class DevGPT(loader.Module):
 										os.remove(file_name)
 							else:
 								await utils.answer(message, self.strings("image_err").format(error=self.strings("no_url")))
-						elif model not in ["sd-3", "any-dark"]:
+						elif model not in ["sd-3", "any-dark"] and response.status != 403:
 							logger.warning("v1 API down! Trying to use v2 instead", exc_info=True)
 							payload_v2 = {
 								"model": model,
