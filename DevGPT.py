@@ -174,28 +174,33 @@ class DevGPT(loader.Module):
 										os.remove(file_name)
 							else:
 								await utils.answer(message, self.strings("image_err").format(error=self.strings("no_url")))
-						elif model not in ["sd-3", "any-dark"] and response.status != 403:
+						elif model not in ["sd-3", "any-dark"]:
 							logger.warning("v1 API down! Trying to use v2 instead", exc_info=True)
 							payload_v2 = {
 								"model": model,
 								"prompt": prompt
 							}
 							async with session.post(self.server_url_images_v2, headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}, data=json.dumps(payload_v2)) as response_v2:
-								response_v2.raise_for_status()
-								image_v2 = await response_v2.text()
+								if response_v2.status == 200:
+									
+									image_v2 = await response_v2.text()
 
-								try:
-									image_v2 = json.loads(image_v2)
-									image_v2_url = image_v2.get("link")
-								except json.JSONDecodeError:
-									image_v2_url = image_v2.strip()
+									try:
+										image_v2 = json.loads(image_v2)
+										image_v2_url = image_v2.get("link")
+									except json.JSONDecodeError:
+										image_v2_url = image_v2.strip()
 
-								async with session.get(image_v2_url) as image_v2_response:
-									image_v2_response.raise_for_status()
-									image_v2_content = io.BytesIO(await image_v2_response.read())
-							await message.delete()
-							await self._client.send_file(message.chat_id, image_v2_content, caption=(self.strings('quest_img').format(img_url=image_v2_url, prmpt=prompt, mdl=model)))
-						elif response.status == 403 or response_v2.status == 403:
+									async with session.get(image_v2_url) as image_v2_response:
+										image_v2_response.raise_for_status()
+										image_v2_content = io.BytesIO(await image_v2_response.read())
+									await message.delete()
+									await self._client.send_file(message.chat_id, image_v2_content, caption=(self.strings('quest_img').format(img_url=image_v2_url, prmpt=prompt, mdl=model)))
+								else:
+									err_data = await response_v2.json()
+									ban_reason = err_data.get("reason")
+									await utils.answer(message, self.strings("ban").format(reason=ban_reason))
+						elif response.status == 403:
 							err_data = await response.json()
 							ban_reason = err_data.get("reason")
 							await utils.answer(message, self.strings("ban").format(reason=ban_reason))
