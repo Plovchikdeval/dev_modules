@@ -195,7 +195,7 @@ class DevGPT(loader.Module):
 									image_v2_content = io.BytesIO(await image_v2_response.read())
 							await message.delete()
 							await self._client.send_file(message.chat_id, image_v2_content, caption=(self.strings('quest_img').format(img_url=image_v2_url, prmpt=prompt, mdl=model)))
-						elif response.status == 403:
+						elif response.status == 403 or response_v2.status == 403:
 							err_data = await response.json()
 							ban_reason = err_data.get("reason")
 							await utils.answer(message, self.strings("ban").format(reason=ban_reason))
