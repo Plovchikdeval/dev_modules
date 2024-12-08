@@ -1,4 +1,4 @@
-__version__ = (1, 0, 9)
+__version__ = (1, 0, 11)
 
 """
   █ █▀█ █▄█ █ ▄█   █▀▄ █▀█ █▀▀
@@ -103,7 +103,7 @@ class DevGPT(loader.Module):
 		self.prefix = self._client.loader.get_prefix()
 
 		self.text_models = ["gpt-4", "gpt-4-turbo", "gpt-4o", "gpt-4o-mini", "o1-preview", "hermes-2-pro", "phi-2", "gemini-pro", "gemini-flash", "gemma-2b", "claude-3-haiku", "claude-3.5-sonnet", "blackboxai", "llava-13b", "openchat-3.5", "sonar-chat", "german-7b", "any-uncensored"]
-		self.image_models = ["sd-3", "flux-pro", "flux-realism", "flux-anime", "flux-disney", "flux-pixel", "flux-4o", "any-dark"]
+		self.image_models = ["sd-3", "flux-pro", "flux-realism", "flux-anime", "flux-disney", "flux-pixel", "flux-4o", "any-dark", "flux"]
 		self.additional_image_models = ["anything-v5", "dreamshaper-v6", "dreamshaper-v5", "meina-v9"]
 
 	async def generate_text(self, message, args):
@@ -298,6 +298,5 @@ class DevGPT(loader.Module):
 			update_message = self.strings("old_version").format(ver=correct_version_str, new_ver=new_version)
 			update_message += self.strings("update_command").format(prefix=self.prefix, upd_file=f"{self.repo}/{local_file.name}")
 			await utils.answer(message, update_message)
-
 
 
