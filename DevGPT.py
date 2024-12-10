@@ -1,4 +1,4 @@
-__version__ = (1, 0, 12)
+__version__ = (1, 0, 13)
 
 """
   █ █▀█ █▄█ █ ▄█   █▀▄ █▀█ █▀▀
@@ -8,7 +8,7 @@ __version__ = (1, 0, 12)
 """
 # scope: hikka_only
 # scope: hikka_min 1.3.3
-# meta developer: @djmodules
+# meta developer: @devjmodules
 # meta banner: https://kappa.lol/nfF_A
 # requires: requests
 
