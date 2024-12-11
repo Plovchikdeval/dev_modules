@@ -217,7 +217,6 @@ class DevGPT(loader.Module):
 				image_response = requests.get(image_url)
 
 				image = io.BytesIO(image_response.content)
-				image.name = "generated_image.png"
 
 				await utils.answer(message, image, caption=(self.strings("quest_img").format(img_url=image_url, prmpt=prompt, mdl=model)))
 			except requests.exceptions.RequestException as e:
