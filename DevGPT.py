@@ -1,4 +1,4 @@
-__version__ = (1, 0, 13)
+__version__ = (1, 0, 15)
 
 """
   █ █▀█ █▄█ █ ▄█   █▀▄ █▀█ █▀▀
@@ -32,60 +32,60 @@ class DevGPT(loader.Module):
 
 	strings = {
 		"name": "DevGPT",
-		"wait": "<blockquote>🤖 <b>The server is processing the request, please wait...</b></blockquote>",
-		"quest": "\n\n\n<blockquote>💭 <b>Your request:</b> {args}</blockquote>",
-		"quest_img": "<blockquote><b>🔗 Link: <a href='{img_url}'>image</a></b></blockquote>\n\n<blockquote>💭 <b>Prompt:</b> <code>{prmpt}</code></blockquote>\n\n<blockquote>🤖 <b>Model:</b> <code>{mdl}</code></blockquote>",
-		"args_err": "<blockquote>ℹ️ <b>Usage: {prefix}dgpt/dgimg <model> <request></b></blockquote>",
-		"query_err": "<blockquote>⛔️ <b>The request cannot be empty!</b></blockquote>",
-		"server_err": "<blockquote>⚠️ <b>Server error: {error}</b></blockquote>",
-		"image_err": "⚠️ <b>Error generating image: {error}</b>",
-		"models_list": "<blockquote>📝 <b>Text</b></blockquote>\n\n<blockquote>{txt_models}</blockquote>\n\n<blockquote>🖼 <b>Images</b></blockquote>\n\n<blockquote>{img_models}</blockquote>",
-		"model_not_found": "<blockquote>⛔️ <b>Model not found! List of available models: {prefix}dgmodels</b></blockquote>",
+		"wait": "<blockquote><emoji document_id=5994544674604322765>😀</emoji> <b>The server is processing the request, please wait...</b></blockquote>",
+		"quest": "\n\n\n<blockquote><emoji document_id=5465143921912846619>💭</emoji> <b>Your request:</b> {args}</blockquote>",
+		"quest_img": "<blockquote><b><emoji document_id=5877465816030515018>😀</emoji> Link: <a href='{img_url}'>image</a></b></blockquote>\n\n<blockquote><emoji document_id=5465143921912846619>💭</emoji> <b>Prompt:</b> <code>{prmpt}</code></blockquote>\n\n<blockquote><emoji document_id=5994544674604322765>😀</emoji> <b>Model:</b> <code>{mdl}</code></blockquote>",
+		"args_err": "<blockquote><emoji document_id=5897846616966041652>❓</emoji> <b>Usage: {prefix}dgpt/dgimg <model> <request></b></blockquote>",
+		"query_err": "<blockquote><emoji document_id=5208434048753484584>⛔</emoji> <b>The request cannot be empty!</b></blockquote>",
+		"server_err": "<blockquote><emoji document_id=5881702736843511327>⚠️</emoji> <b>Server error: {error}</b></blockquote>",
+		"image_err": "<emoji document_id=5881702736843511327>⚠️</emoji> <b>Error generating image: {error}</b>",
+		"models_list": "<blockquote><emoji document_id=5879841310902324730>😀</emoji><b>Text</b></blockquote>\n\n<blockquote>{txt_models}</blockquote>\n\n<blockquote><emoji document_id=5775949822993371030>🖼</emoji> <b>Images</b></blockquote>\n\n<blockquote>{img_models}</blockquote>",
+		"model_not_found": "<blockquote><emoji document_id=5208434048753484584>⛔</emoji> <b>Model not found! List of available models: {prefix}dgmodels</b></blockquote>",
 		"no_url": "No image URL received",
 		"no_server_respond": "No response from the server",
-		"fetch_failed": "<blockquote>❌ <b>Fetching data failed</b></blockquote>",
-		"actual_version": "<blockquote>You have actual DevGPT ({ver})</b></blockquote>",
+		"fetch_failed": "<blockquote><emoji document_id=5208663713539704322>👎</emoji> <b>Fetching data failed</b></blockquote>",
+		"actual_version": "<blockquote> <emoji document_id=5208763618773978162>✅</emoji>You have actual DevGPT ({ver})</b></blockquote>",
 		"old_version": "<blockquote>You have old DevGPT ({ver}) </b></blockquote>",
 		"update_command": "<blockquote>To update type:</b> <code> {prefix}dlm {upd_file}</code>\n\n<b>New version: {new_ver} <b></blockquote>",
-		"ban": "<blockquote>❌ You are banned! Reason: {reason}</blockquote>",
+		"ban": "<blockquote><emoji document_id=5208663713539704322>👎</emoji> You are banned! Reason: {reason}</blockquote>",
 	}
 
 	strings_ua = {
-		"wait": "<blockquote>🤖 <b>Сервер обробляє запит, будь ласка, зачекайте...</b></blockquote>",
-		"quest": "\n\n\n<blockquote>💭 <b>Ваш запит:</b> {args}</blockquote>",
-		"quest_img": "<blockquote><b>🔗 Посилання: <a href='{img_url}'>зображення</a></b></blockquote>\n\n<blockquote>💭 <b>Запит:</b> <code>{prmpt}</code></blockquote>\n\n<blockquote>🤖 <b>Модель:</b> <code>{mdl}</code></blockquote>",
-		"args_err": "<blockquote>ℹ️ <b>Використання {prefix}dgpt/dgimg <модель> <запит></b></blockquote>",
-		"query_err": "<blockquote>⛔️ <b>Запит не може бути порожнім!</b></blockquote>",
-		"server_err": "<blockquote>⚠️ <b>Помилка сервера: {error}</b></blockquote>",
-		"image_err": "⚠️ <b>Помилка при генерації зображення: {error}</b>",
-		"models_list": "<blockquote>📝 <b>Текст</b></blockquote>\n\n<blockquote>{txt_models}</blockquote>\n\n<blockquote>🖼 <b>Зображення</b></blockquote>\n\n<blockquote>{img_models}</blockquote>",
-		"model_not_found": "<blockquote>⛔️ <b>Модель не знайдена! Список доступних моделей {prefix}dgmodels</b></blockquote>",
+		"wait": "<blockquote><emoji document_id=5994544674604322765>😀</emoji> <b>Сервер обробляє запит, будь ласка, зачекайте...</b></blockquote>",
+		"quest": "\n\n\n<blockquote><emoji document_id=5465143921912846619>💭</emoji> <b>Ваш запит:</b> {args}</blockquote>",
+		"quest_img": "<blockquote><b><emoji document_id=5877465816030515018>😀</emoji> Посилання: <a href='{img_url}'>зображення</a></b></blockquote>\n\n<blockquote><emoji document_id=5465143921912846619>💭</emoji> <b>Запит:</b> <code>{prmpt}</code></blockquote>\n\n<blockquote><emoji document_id=5994544674604322765>😀</emoji> <b>Модель:</b> <code>{mdl}</code></blockquote>",
+		"args_err": "<blockquote><emoji document_id=5897846616966041652>❓</emoji> <b>Використання {prefix}dgpt/dgimg <модель> <запит></b></blockquote>",
+		"query_err": "<blockquote><emoji document_id=5208434048753484584>⛔</emoji> <b>Запит не може бути порожнім!</b></blockquote>",
+		"server_err": "<blockquote><emoji document_id=5881702736843511327>⚠️</emoji> <b>Помилка сервера: {error}</b></blockquote>",
+		"image_err": "<emoji document_id=5881702736843511327>⚠️</emoji> <b>Помилка при генерації зображення: {error}</b>",
+		"models_list": "<blockquote><emoji document_id=5879841310902324730>😀</emoji><b>Текст</b></blockquote>\n\n<blockquote>{txt_models}</blockquote>\n\n<blockquote><emoji document_id=5775949822993371030>🖼</emoji> <b>Зображення</b></blockquote>\n\n<blockquote>{img_models}</blockquote>",
+		"model_not_found": "<blockquote><emoji document_id=5208434048753484584>⛔</emoji> <b>Модель не знайдена! Список доступних моделей {prefix}dgmodels</b></blockquote>",
 		"no_url": "Не отримано URL зображення",
 		"no_server_respond": "Немає відповіді від сервера",
-		"fetch_failed": "<blockquote>❌ <b>Не вдалося отримати дані</b></blockquote>",
-		"actual_version": "<blockquote>У вас актуальна версія DevGPT ({ver})</b></blockquote>",
+		"fetch_failed": "<blockquote><emoji document_id=5208663713539704322>👎</emoji> <b>Не вдалося отримати дані</b></blockquote>",
+		"actual_version": "<blockquote> <emoji document_id=5208763618773978162>✅</emoji>У вас актуальна версія DevGPT ({ver})</b></blockquote>",
 		"old_version": "<blockquote>У вас застаріла версія DevGPT ({ver}) </b>\n\n<b>Нова версія: {new_ver} <b></blockquote>",
 		"update_command": "<blockquote>Для оновлення введіть:</b> <code> {prefix}dlm {upd_file}</code></blockquote>",
-		"ban": "<blockquote>❌ Вас забанено! З причини: {reason}</blockquote>",
+		"ban": "<blockquote><emoji document_id=5208663713539704322>👎</emoji> Вас забанено! З причини: {reason}</blockquote>",
 	}
 
 	strings_ru = {
-		"wait": "<blockquote>🤖 <b>Сервер обрабатывает запрос, подождите...</b></blockquote>",
-		"quest": "\n\n\n<blockquote>💭 <b>Ваш запрос:</b> {args}</blockquote>",
-		"quest_img": "<blockquote><b>🔗 Ссылка: <a href='{img_url}'>изображение</a></b></blockquote>\n\n<blockquote>💭 <b>Запрос:</b> <code>{prmpt}</code></blockquote>\n\n<blockquote>🤖 <b>Модель:</b> <code>{mdl}</code></blockquote>",
-		"args_err": "<blockquote>ℹ️ <b>Использование {prefix}dgpt/dgimg <модель> <запрос></b></blockquote>",
-		"query_err": "<blockquote>⛔️ <b>Запрос не может быть пустым!</b></blockquote>",
-		"server_err": "<blockquote>⚠️ <b>Ошибка сервера: {error}</b></blockquote>",
-		"image_err": "⚠️ <b>Ошибка при генерации изображения: {error}</b>",
-		"models_list": "<blockquote>📝 <b>Текст</b></blockquote>\n\n<blockquote>{txt_models}</blockquote>\n\n<blockquote>🖼 <b>Изображения</b></blockquote>\n\n<blockquote>{img_models}</blockquote>",
-		"model_not_found": "<blockquote>⛔️ <b>Модель не найдена! Список доступных моделей {prefix}dgmodels</b></blockquote>",
+		"wait": "<blockquote><emoji document_id=5994544674604322765>😀</emoji> <b>Сервер обрабатывает запрос, подождите...</b></blockquote>",
+		"quest": "\n\n\n<blockquote><emoji document_id=5465143921912846619>💭</emoji> <b>Ваш запрос:</b> {args}</blockquote>",
+		"quest_img": "<blockquote><b><emoji document_id=5877465816030515018>😀</emoji> Ссылка: <a href='{img_url}'>изображение</a></b></blockquote>\n\n<blockquote><emoji document_id=5465143921912846619>💭</emoji> <b>Запрос:</b> <code>{prmpt}</code></blockquote>\n\n<blockquote><emoji document_id=5994544674604322765>😀</emoji> <b>Модель:</b> <code>{mdl}</code></blockquote>",
+		"args_err": "<blockquote><emoji document_id=5897846616966041652>❓</emoji> <b>Использование {prefix}dgpt/dgimg <модель> <запрос></b></blockquote>",
+		"query_err": "<blockquote><emoji document_id=5208434048753484584>⛔</emoji> <b>Запрос не может быть пустым!</b></blockquote>",
+		"server_err": "<blockquote><emoji document_id=5881702736843511327>⚠️</emoji> <b>Ошибка сервера: {error}</b></blockquote>",
+		"image_err": "<emoji document_id=5881702736843511327>⚠️</emoji> <b>Ошибка при генерации изображения: {error}</b>",
+		"models_list": "<blockquote><emoji document_id=5879841310902324730>😀</emoji><b>Текст</b></blockquote>\n\n<blockquote>{txt_models}</blockquote>\n\n<blockquote><emoji document_id=5775949822993371030>🖼</emoji> <b>Изображения</b></blockquote>\n\n<blockquote>{img_models}</blockquote>",
+		"model_not_found": "<blockquote><emoji document_id=5208434048753484584>⛔</emoji> <b>Модель не найдена! Список доступных моделей {prefix}dgmodels</b></blockquote>",
 		"no_url": "Не получен URL изображения",
 		"no_server_respond": "Нет ответа от сервера",
-		"fetch_failed": "<blockquote>❌ <b>Не удалось получить данные</b></blockquote>",
-		"actual_version": "<blockquote>У вас актуальная версия DevGPT ({ver})</b></blockquote>",
+		"fetch_failed": "<blockquote><emoji document_id=5208663713539704322>👎</emoji> <b>Не удалось получить данные</b></blockquote>",
+		"actual_version": "<blockquote> <emoji document_id=5208763618773978162>✅</emoji>У вас актуальная версия DevGPT ({ver})</b></blockquote>",
 		"old_version": "<blockquote>У вас устаревшая версия DevGPT ({ver}) </b>\n\n<b>Новая версия: {new_ver} <b></blockquote>",
 		"update_command": "<blockquote>Для обновления введите:</b> <code> {prefix}dlm {upd_file}</code></blockquote>",
-		"ban": "<blockquote>❌ Вы забанены! По причине: {reason}</blockquote>",
+		"ban": "<blockquote><emoji document_id=5208663713539704322>👎</emoji> Вы забанены! По причине: {reason}</blockquote>",
 	}
 
 	async def client_ready(self, client, _):
@@ -298,5 +298,4 @@ class DevGPT(loader.Module):
 			update_message = self.strings("old_version").format(ver=correct_version_str, new_ver=new_version)
 			update_message += self.strings("update_command").format(prefix=self.prefix, upd_file=f"{self.repo}/{local_file.name}")
 			await utils.answer(message, update_message)
-
 
