@@ -1,4 +1,4 @@
-__version__ = (1, 1, 1)
+__version__ = (1, 1, 2)
 
 """
   █ █▀█ █▄█ █ ▄█   █▀▄ █▀█ █▀▀
@@ -31,24 +31,24 @@ class UploaderMod(loader.Module):
 
     strings = {
         "name": "Uploader",
-        "uploading": "<emoji document_id=5451732530048802485>⏳</emoji> <b>Uploading...</b>",
-        "noargs": "<emoji document_id=5472267631979405211>🚫</emoji> <b>No file specified</b>",
-        "err": "<emoji document_id=5472267631979405211>🚫</emoji> <b>Upload error</b>",
-        "uploaded": "<emoji document_id=5226711870492126219>🎡</emoji> <b>File uploaded!</b>\n\n<code>{link_to_file}</code>",
+        "uploading": "<emoji document_id=5872756762347573066>⏲</emoji> <b>Uploading...</b>",
+        "noargs": "<emoji document_id=5208434048753484584>⛔</emoji> <b>No file specified</b>",
+        "err": "<emoji document_id=5208434048753484584>⛔</emoji> <b>Upload error</b>",
+        "uploaded": "<emoji document_id=5208547229731669225>⚡</emoji> <b>File uploaded!</b>\n\n<code>{link_to_file}</code>",
     }
 
     strings_ua = {
-        "uploading": "<emoji document_id=5451732530048802485>⏳</emoji> <b>Завантаження...</b>",
-        "noargs": "<emoji document_id=5472267631979405211>🚫</emoji> <b>Файл не вказано</b>",
-        "err": "<emoji document_id=5472267631979405211>🚫</emoji> <b>Помилка завантаження</b>",
-        "uploaded": "<emoji document_id=5226711870492126219>🎡</emoji> <b>Файл завантажено!</b>\n\n<code>{link_to_file}</code>",
+        "uploading": "<emoji document_id=5872756762347573066>⏲</emoji><b>Завантаження...</b>",
+        "noargs": "<emoji document_id=5208434048753484584>⛔</emoji> <b>Файл не вказано</b>",
+        "err": "<emoji document_id=5208434048753484584>⛔</emoji> <b>Помилка завантаження</b>",
+        "uploaded": "<emoji document_id=5208547229731669225>⚡</emoji> <b>Файл завантажено!</b>\n\n<code>{link_to_file}</code>",
     }
 
     strings_ru = {
-        "uploading": "<emoji document_id=5451732530048802485>⏳</emoji> <b>Загрузка...</b>",
-        "noargs": "<emoji document_id=5472267631979405211>🚫</emoji> <b>Файл не указан</b>",
-        "err": "<emoji document_id=5472267631979405211>🚫</emoji> <b>Ошибка загрузки</b>",
-        "uploaded": "<emoji document_id=5226711870492126219>🎡</emoji> <b>Файл загружен!</b>\n\n<code>{link_to_file}</code>",
+        "uploading": "<emoji document_id=5872756762347573066>⏲</emoji> <b>Загрузка...</b>",
+        "noargs": "<emoji document_id=5208434048753484584>⛔</emoji> <b>Файл не указан</b>",
+        "err": "<emoji document_id=5208434048753484584>⛔</emoji> <b>Ошибка загрузки</b>",
+        "uploaded": "<emoji document_id=5208547229731669225>⚡</emoji> <b>Файл загружен!</b>\n\n<code>{link_to_file}</code>",
     }
 
     async def client_ready(self, client, _):
