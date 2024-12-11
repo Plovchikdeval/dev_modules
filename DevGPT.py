@@ -166,7 +166,7 @@ class DevGPT(loader.Module):
 									file = io.BytesIO(await generated_image.read())
 									file.name = "dgimage.png"
 
-								await utils.answer_file(message, file, caption=(self.strings('quest_img').format(img_url=image_v2_url, prmpt=prompt, mdl=model)))
+								await utils.answer_file(message, file, caption=(self.strings('quest_img').format(img_url=image_url, prmpt=prompt, mdl=model)))
 							else:
 								await utils.answer(message, self.strings("image_err").format(error=self.strings("no_url")))
 						elif model not in ["sd-3", "any-dark"]:
