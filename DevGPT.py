@@ -163,7 +163,7 @@ class DevGPT(loader.Module):
 							if image_url:
 								async with session.get(image_url) as generated_image:
 									generated_image.raise_for_status()
-									file = io.BytesIO(await image_url.read())
+									file = io.BytesIO(await generated_image.read())
 									file.name = "dgimage.png"
 
 								await utils.answer_file(message, file, caption=(self.strings('quest_img').format(img_url=image_v2_url, prmpt=prompt, mdl=model)))
