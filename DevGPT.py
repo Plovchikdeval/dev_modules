@@ -161,17 +161,12 @@ class DevGPT(loader.Module):
 							image_url = data.get("data", [{}])[0].get("url", None)
 
 							if image_url:
-								try:
-									async with session.get(image_url) as generated_image:
-										file_name = "dgimage.png"
-										with open(file_name,'wb') as file:
-											file.write(await generated_image.read())
+								async with session.get(image_url) as generated_image:
+									generate_image.raise_for_status()
+									file = io.io.BytesIO(await image_v2_response.read())
+									file.name = "dgimage.png"
 
-									await message.delete()
-									await self._client.send_file(message.chat_id, file_name, caption=(self.strings('quest_img').format(img_url=image_url, prmpt=prompt, mdl=model)))
-								finally:
-									if os.path.exists(file_name):
-										os.remove(file_name)
+								await utils.answer_file(message, file, caption=(self.strings('quest_img').format(img_url=image_v2_url, prmpt=prompt, mdl=model)))
 							else:
 								await utils.answer(message, self.strings("image_err").format(error=self.strings("no_url")))
 						elif model not in ["sd-3", "any-dark"]:
@@ -194,8 +189,7 @@ class DevGPT(loader.Module):
 									async with session.get(image_v2_url) as image_v2_response:
 										image_v2_response.raise_for_status()
 										image_v2_content = io.BytesIO(await image_v2_response.read())
-									await message.delete()
-									await self._client.send_file(message.chat_id, image_v2_content, caption=(self.strings('quest_img').format(img_url=image_v2_url, prmpt=prompt, mdl=model)))
+									await utils.answer_file(message, image_v2_content, caption=(self.strings('quest_img').format(img_url=image_v2_url, prmpt=prompt, mdl=model)))
 								else:
 									err_data = await response_v2.json()
 									ban_reason = err_data.get("reason")
@@ -225,8 +219,7 @@ class DevGPT(loader.Module):
 				image = io.BytesIO(image_response.content)
 				image.name = "generated_image.png"
 
-				await self._client.send_file(message.chat_id,image, caption=(self.strings("quest_img").format(img_url=image_url, prmpt=prompt, mdl=model)))
-				await message.delete()
+				await utils.answer(message, image, caption=(self.strings("quest_img").format(img_url=image_url, prmpt=prompt, mdl=model)))
 			except requests.exceptions.RequestException as e:
 				await utils.answer(message, self.strings("image_err").format(error=e))
 			except Exception as e:
