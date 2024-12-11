@@ -235,7 +235,7 @@ class DevGPT(loader.Module):
 			await utils.answer(message, self.strings("args_err").format(prefix=self.prefix))
 			return
 
-		await message.edit(self.strings("wait"))
+		await utils.answer(message, self.strings("wait"))
 
 		await self.generate_text(message, args)
 
@@ -247,7 +247,7 @@ class DevGPT(loader.Module):
 			await utils.answer(message, self.strings("args_err").format(prefix=self.prefix))
 			return
 
-		await message.edit(self.strings("wait"))
+		await utils.answer(message, self.strings("wait"))
 
 		await self.generate_image(message, args)
 
