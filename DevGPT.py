@@ -45,8 +45,8 @@ class DevGPT(loader.Module):
 		"no_server_respond": "No response from the server",
 		"fetch_failed": "<blockquote><emoji document_id=5208663713539704322>👎</emoji> <b>Fetching data failed</b></blockquote>",
 		"actual_version": "<blockquote> <emoji document_id=5208763618773978162>✅</emoji>You have actual DevGPT ({ver})</b></blockquote>",
-		"old_version": "<blockquote>You have old DevGPT ({ver}) </b></blockquote>",
-		"update_command": "<blockquote>To update type:</b> <code> {prefix}dlm {upd_file}</code>\n\n<b>New version: {new_ver} <b></blockquote>",
+		"old_version": "<blockquote><emoji document_id=5875291072225087249>📊</emoji> You have old DevGPT ({ver}) </b></blockquote>",
+		"update_command": "<blockquote><emoji document_id=5877410604225924969>🔄</emoji> To update type:</b> <code> {prefix}dlm {upd_file}</code>\n\n<emoji document_id=5879883461711367869>⬇️</emoji> <b>New version: {new_ver} <b></blockquote>",
 		"ban": "<blockquote><emoji document_id=5208663713539704322>👎</emoji> You are banned! Reason: {reason}</blockquote>",
 	}
 
@@ -64,8 +64,8 @@ class DevGPT(loader.Module):
 		"no_server_respond": "Немає відповіді від сервера",
 		"fetch_failed": "<blockquote><emoji document_id=5208663713539704322>👎</emoji> <b>Не вдалося отримати дані</b></blockquote>",
 		"actual_version": "<blockquote> <emoji document_id=5208763618773978162>✅</emoji>У вас актуальна версія DevGPT ({ver})</b></blockquote>",
-		"old_version": "<blockquote>У вас застаріла версія DevGPT ({ver}) </b>\n\n<b>Нова версія: {new_ver} <b></blockquote>",
-		"update_command": "<blockquote>Для оновлення введіть:</b> <code> {prefix}dlm {upd_file}</code></blockquote>",
+		"old_version": "<blockquote><emoji document_id=5875291072225087249>📊</emoji> У вас застаріла версія DevGPT ({ver}) </b>\n\n<emoji document_id=5879883461711367869>⬇️</emoji> <b>Нова версія: {new_ver} <b></blockquote>",
+		"update_command": "<blockquote><emoji document_id=5877410604225924969>🔄</emoji> Для оновлення введіть:</b> <code> {prefix}dlm {upd_file}</code></blockquote>",
 		"ban": "<blockquote><emoji document_id=5208663713539704322>👎</emoji> Вас забанено! З причини: {reason}</blockquote>",
 	}
 
@@ -83,8 +83,8 @@ class DevGPT(loader.Module):
 		"no_server_respond": "Нет ответа от сервера",
 		"fetch_failed": "<blockquote><emoji document_id=5208663713539704322>👎</emoji> <b>Не удалось получить данные</b></blockquote>",
 		"actual_version": "<blockquote> <emoji document_id=5208763618773978162>✅</emoji>У вас актуальная версия DevGPT ({ver})</b></blockquote>",
-		"old_version": "<blockquote>У вас устаревшая версия DevGPT ({ver}) </b>\n\n<b>Новая версия: {new_ver} <b></blockquote>",
-		"update_command": "<blockquote>Для обновления введите:</b> <code> {prefix}dlm {upd_file}</code></blockquote>",
+		"old_version": "<blockquote><emoji document_id=5875291072225087249>📊</emoji> У вас устаревшая версия DevGPT ({ver}) </b>\n\n<emoji document_id=5879883461711367869>⬇️</emoji> <b>Новая версия: {new_ver} <b></blockquote>",
+		"update_command": "<blockquote><emoji document_id=5877410604225924969>🔄</emoji> Для обновления введите:</b> <code> {prefix}dlm {upd_file}</code></blockquote>",
 		"ban": "<blockquote><emoji document_id=5208663713539704322>👎</emoji> Вы забанены! По причине: {reason}</blockquote>",
 	}
 
