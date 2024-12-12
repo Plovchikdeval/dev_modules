@@ -10,6 +10,7 @@ __version__ = (0, 0, 5)
 # scope: hikka_min 1.3.3
 # meta developer: @devjmodules
 # requires: requests
+# meta banner: http://ndpropave5.temp.swtest.ru/files/EJp.jpg
 
 import logging
 import aiohttp
