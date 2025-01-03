@@ -1,4 +1,4 @@
-__version__ = (1, 0, 16)
+__version__ = (1, 0, 17)
 
 """
   █ █▀█ █▄█ █ ▄█   █▀▄ █▀█ █▀▀
@@ -35,7 +35,7 @@ class DevGPT(loader.Module):
 		"wait": "<blockquote><emoji document_id=5994544674604322765>😀</emoji> <b>The server is processing the request, please wait...</b></blockquote>",
 		"quest": "\n\n\n<blockquote><emoji document_id=5465143921912846619>💭</emoji> <b>Your request:</b> {args}</blockquote>",
 		"quest_img": "<blockquote><b><emoji document_id=5877465816030515018>😀</emoji> Link: <a href='{img_url}'>image</a></b></blockquote>\n\n<blockquote><emoji document_id=5465143921912846619>💭</emoji> <b>Prompt:</b> <code>{prmpt}</code></blockquote>\n\n<blockquote><emoji document_id=5994544674604322765>😀</emoji> <b>Model:</b> <code>{mdl}</code></blockquote>",
-		"args_err": "<blockquote><emoji document_id=5897846616966041652>❓</emoji> <b>Usage: {prefix}dgpt/dgimg <model> <request></b></blockquote>",
+		"args_err": "<blockquote><emoji document_id=5897846616966041652>❓</emoji> <b>Usage: {prefix}dgpt/dimg <model> <request></b></blockquote>",
 		"query_err": "<blockquote><emoji document_id=5208434048753484584>⛔</emoji> <b>The request cannot be empty!</b></blockquote>",
 		"server_err": "<blockquote><emoji document_id=5881702736843511327>⚠️</emoji> <b>Server error: {error}</b></blockquote>",
 		"image_err": "<emoji document_id=5881702736843511327>⚠️</emoji> <b>Error generating image: {error}</b>",
@@ -54,7 +54,7 @@ class DevGPT(loader.Module):
 		"wait": "<blockquote><emoji document_id=5994544674604322765>😀</emoji> <b>Сервер обробляє запит, будь ласка, зачекайте...</b></blockquote>",
 		"quest": "\n\n\n<blockquote><emoji document_id=5465143921912846619>💭</emoji> <b>Ваш запит:</b> {args}</blockquote>",
 		"quest_img": "<blockquote><b><emoji document_id=5877465816030515018>😀</emoji> Посилання: <a href='{img_url}'>зображення</a></b></blockquote>\n\n<blockquote><emoji document_id=5465143921912846619>💭</emoji> <b>Запит:</b> <code>{prmpt}</code></blockquote>\n\n<blockquote><emoji document_id=5994544674604322765>😀</emoji> <b>Модель:</b> <code>{mdl}</code></blockquote>",
-		"args_err": "<blockquote><emoji document_id=5897846616966041652>❓</emoji> <b>Використання {prefix}dgpt/dgimg <модель> <запит></b></blockquote>",
+		"args_err": "<blockquote><emoji document_id=5897846616966041652>❓</emoji> <b>Використання {prefix}dgpt/dimg <модель> <запит></b></blockquote>",
 		"query_err": "<blockquote><emoji document_id=5208434048753484584>⛔</emoji> <b>Запит не може бути порожнім!</b></blockquote>",
 		"server_err": "<blockquote><emoji document_id=5881702736843511327>⚠️</emoji> <b>Помилка сервера: {error}</b></blockquote>",
 		"image_err": "<emoji document_id=5881702736843511327>⚠️</emoji> <b>Помилка при генерації зображення: {error}</b>",
@@ -73,7 +73,7 @@ class DevGPT(loader.Module):
 		"wait": "<blockquote><emoji document_id=5994544674604322765>😀</emoji> <b>Сервер обрабатывает запрос, подождите...</b></blockquote>",
 		"quest": "\n\n\n<blockquote><emoji document_id=5465143921912846619>💭</emoji> <b>Ваш запрос:</b> {args}</blockquote>",
 		"quest_img": "<blockquote><b><emoji document_id=5877465816030515018>😀</emoji> Ссылка: <a href='{img_url}'>изображение</a></b></blockquote>\n\n<blockquote><emoji document_id=5465143921912846619>💭</emoji> <b>Запрос:</b> <code>{prmpt}</code></blockquote>\n\n<blockquote><emoji document_id=5994544674604322765>😀</emoji> <b>Модель:</b> <code>{mdl}</code></blockquote>",
-		"args_err": "<blockquote><emoji document_id=5897846616966041652>❓</emoji> <b>Использование {prefix}dgpt/dgimg <модель> <запрос></b></blockquote>",
+		"args_err": "<blockquote><emoji document_id=5897846616966041652>❓</emoji> <b>Использование {prefix}dgpt/dimg <модель> <запрос></b></blockquote>",
 		"query_err": "<blockquote><emoji document_id=5208434048753484584>⛔</emoji> <b>Запрос не может быть пустым!</b></blockquote>",
 		"server_err": "<blockquote><emoji document_id=5881702736843511327>⚠️</emoji> <b>Ошибка сервера: {error}</b></blockquote>",
 		"image_err": "<emoji document_id=5881702736843511327>⚠️</emoji> <b>Ошибка при генерации изображения: {error}</b>",
