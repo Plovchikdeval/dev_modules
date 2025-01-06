@@ -1,4 +1,4 @@
-__version__ = (3, 0, 1)
+__version__ = (3, 0, 2)
 
 # ---------------------------------------------------------------------------------
 #  /\_/\  🌐 This module was loaded through https://t.me/hikkamods_bot
@@ -337,7 +337,7 @@ class HikkaVoiceMod(loader.Module):
                     await self._forms[chat_id].delete()
             except Exception as e:
                 print(f"Ошибка при удалении предыдущего сообщения: {e}")
-            self._forms[chat_id] = await utils.answer(message=chat_id, text=msg, reply_markup=markup)
+            self._forms[chat_id] = await utils.answer(message, combined_message, reply_markup=markup)
 
     async def play_video(self, chat_id: int, array: bytes):
         file = os.path.join(self._dir, f"{utils.rand(8)}.mp4")
