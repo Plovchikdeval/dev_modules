@@ -1,4 +1,4 @@
-__version__ = (3, 0, 0)
+__version__ = (3, 0, 1)
 
 # ---------------------------------------------------------------------------------
 #  /\_/\  🌐 This module was loaded through https://t.me/hikkamods_bot
