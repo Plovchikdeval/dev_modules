@@ -1,4 +1,4 @@
 DevGPT
 Uploader
-hikkavoicemode
+VoiceChat
 voicechatinstaller
