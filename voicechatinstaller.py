@@ -109,7 +109,7 @@ class VoiceChatInstaller(loader.Module):
 
         attempt = await utils.answer(d, self.strings('attempting_for_install'))
         msg = await self.client.send_message(message.chat_id, '<i>Installing...</i>')
-        await self.allmodules.commands["dlmod"](await utils.answer(msg, f"{self.get_prefix()}dlmod https://raw.githubusercontent.com/Plovchikdeval/dev_modules/refs/heads/main/hikkavoicemod.py"))
+        await self.allmodules.commands["dlmod"](await utils.answer(msg, f"{self.get_prefix()}dlmod https://raw.githubusercontent.com/Plovchikdeval/dev_modules/refs/heads/main/VoiceChat.py"))
 
         installed = await self.check_module()
 
