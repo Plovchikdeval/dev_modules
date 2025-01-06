@@ -1,4 +1,4 @@
-__version__ = (3, 0, 2)
+__version__ = (3, 0, 3)
 
 # ---------------------------------------------------------------------------------
 #  /\_/\  🌐 This module was loaded through https://t.me/hikkamods_bot
@@ -330,15 +330,12 @@ class HikkaVoiceMod(loader.Module):
             StreamType().pulse_stream,
         )
         await asyncio.sleep(1)
-        if not self.config["silent_queue"]:
-            msg, markup = await self._get_inline_info(chat_id)
-                try:
-                    if chat_id in self._forms:
-                        await self._forms[chat_id].delete()
-                except Exception as e:
-                    print(f"Ошибка при удалении предыдущего сообщения: {e}")
-                self._forms[chat_id] = await utils.answer(message=chat_id, text=msg, reply_markup=markup)
-             
+        with contextlib.suppress(Exception):
+                await self._forms[chat_id].delete()
+            self._forms[chat_id] = await self.inline.form(
+                chat_id, msg, reply_markup=markup
+            )
+         
     async def play_video(self, chat_id: int, array: bytes):
         file = os.path.join(self._dir, f"{utils.rand(8)}.mp4")
         with open(file, "wb") as f:
