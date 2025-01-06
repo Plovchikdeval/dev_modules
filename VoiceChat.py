@@ -19,7 +19,7 @@ __version__ = (3, 0, 0)
 
 # meta pic: https://static.dan.tatar/voicechat_icon.png
 # meta banner: https://mods.hikariatama.ru/badges/voicechat.jpg
-# meta developer: @frost_shard
+# meta developer: @frost_shard & @devjmodules
 # coded by : @hikarimods
 # scope: hikka_only
 # scope: hikka_min 1.3.0
