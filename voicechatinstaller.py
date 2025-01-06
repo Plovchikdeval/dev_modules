@@ -16,7 +16,7 @@ import asyncio
 import subprocess
 
 @loader.tds
-class VoiceChatInstaller(loader.Module):
+class VoiceChatInstaller(loader.Lib):
     '''Module for install HikkaVoicemode(voicechat)'''
 
     strings = {
