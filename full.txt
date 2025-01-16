@@ -3,3 +3,4 @@ Uploader
 VoiceChat
 voicechatinstaller
 LavReboot
+PassManager
