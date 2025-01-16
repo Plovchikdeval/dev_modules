@@ -1,4 +1,4 @@
-# meta developer: @kotcheat
+# meta developer: @kotcheat & @devjmodules
 
 import random
 import string
@@ -11,7 +11,7 @@ class KOTpassfolder(loader.Module):
     """Удобный инструмент для генерации и управления паролями и логинами, который поможет вам создавать безопасные пароли и логины, а также легко управлять ими. Так же можно регулировать длину желаемоего пароля и логина и писать примечание для чего он будет использоваться (by @kotcheat)"""
 
     strings = {
-        "name": "KOTpassfolder",
+        "name": "PasswordManager",
         "generate_credentials": "<b>Сгенерированные  данные:</b>\n\n<b>Логин:</b> <code>{login}</code>\n<b>Пароль:</b> <span class='hidden-text'>{password}</span>\n\n<i>Это сообщение будет автоматически удалено через 30 секунд.</i>",
         "saved_credentials": "<b>Сохраненные  данные:</b>\n\n{credentials}\n\n<i>Это сообщение будет автоматически удалено через 30 секунд.</i>",
         "no_saved_credentials": "Нет сохраненных данных.\n\n<i>Это сообщение будет автоматически удалено через 30 секунд.</i>",
