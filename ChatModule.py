@@ -12,7 +12,7 @@
 Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
 """
 
-# meta developer: @devjmodules
+# meta developer: @kshmods
 
 import asyncio, os
 from .. import loader, security, utils
