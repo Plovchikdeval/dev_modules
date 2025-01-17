@@ -4,7 +4,7 @@ VoiceChat
 voicechatinstaller
 LavReboot
 PassManager
-CMDDJModule
+ChatModule
 MentionNotifier
 PfpRepeater
 URLModule
