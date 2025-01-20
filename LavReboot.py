@@ -8,7 +8,7 @@ __version__ = (0, 0, 3)
 """
 
 # scope: hikka_min 1.3.3
-# meta developer: @devjmodules
+# meta developer: @kshmods
 # requires: subprocess psutil signal
 
 import logging
