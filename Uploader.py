@@ -8,7 +8,7 @@ __version__ = (1, 1, 3)
 """
 # scope: hikka_only
 # scope: hikka_min 1.3.3
-# meta developer: @devjmodules
+# meta developer: @kshmods
 # meta banner: https://kappa.lol/--YNb
 # requires: requests
 
