@@ -33,7 +33,7 @@ from .. import loader, utils
 logger = logging.getLogger(__name__)
 
 @loader.tds
-class ShotMod(loader.Module):
+class ShotModuleMod(loader.Module):
 	"""Module for making screenshots"""
 
 	strings = {
@@ -122,14 +122,20 @@ class ShotMod(loader.Module):
 
 		await utils.answer(message, self.strings("in_progress"))
 
-		file = await self._client.download_file(media)
-		text = file.decode("utf-8")
-		pygments.highlight(
-			text,
-			Python3Lexer(),
-			ImageFormatter(font_name="DejaVu Sans Mono", line_numbers=True),
-			"fileshot.png",
-		)
+		try:
+			file = await self._client.download_file(media)
+			text = file.decode("utf-8")
+			pygments.highlight(
+				text,
+				Python3Lexer(),
+				ImageFormatter(font_name="DejaVu Sans Mono", line_numbers=True),
+				"fileshot.png",
+			)
 
-		await utils.answer_file(message, "fileshot.png", reply_to=reply)
-		os.remove("fileshot.png")
+			await utils.answer_file(message, "fileshot.png", reply_to=reply)
+
+			os.remove("fileshot.png")
+		except Exception as e:
+			logger.error(str(e), exc_info=True)
+			await utils.answer(message, self.strings("err"))
+
