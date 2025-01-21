@@ -51,7 +51,7 @@ class ShotModuleMod(loader.Module):
 		"web_no_args": "<blockquote><emoji document_id=5879785854284599288>ℹ️</emoji> <b>Укажите ссылку или ответьте на сообщение</b></blockquote>",
 		"not_py": "<blockquote><emoji document_id=5879785854284599288>ℹ️</emoji> <b>Ответьте на сообщение с файлом</b></blockquote>",
 		"err": "<blockquote><emoji document_id=5415732509310735525>😕</emoji> <b>Что-то пошло не так</b></blockquote>",
-		"no_token": "<blockquote><emoji document_id=5402461597237004802>🧐</emoji> <b>окен не найден! Проверьте конфиг</b></blockquote>",
+		"no_token": "<blockquote><emoji document_id=5402461597237004802>🧐</emoji> <b>Токен не найден! Проверьте конфиг</b></blockquote>",
 		"_cfg_token": "Вставьте токен, полученный от screenapi.net"
 	}
 
