@@ -18,3 +18,4 @@ memberslist
 stats
 weather
 UpgradedNeofetch
+ShotModule
