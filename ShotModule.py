@@ -1,4 +1,4 @@
-__version__ = (0, 0, 2)
+__version__ = (0, 0, 3)
 
 """
 888    d8P   .d8888b.  888    888     888b     d888  .d88888b.  8888888b.   .d8888b.  
@@ -52,7 +52,7 @@ class ShotModuleMod(loader.Module):
 		"not_py": "<blockquote><emoji document_id=5879785854284599288>ℹ️</emoji> <b>Ответьте на сообщение с файлом</b></blockquote>",
 		"err": "<blockquote><emoji document_id=5415732509310735525>😕</emoji> <b>Что-то пошло не так</b></blockquote>",
 		"no_token": "<blockquote><emoji document_id=5402461597237004802>🧐</emoji> <b>Токен не найден! Проверьте конфиг</b></blockquote>",
-		"_cfg_token": "Вставьте токен, полученный от screenapi.net"
+		"_cfg_token": "Вставьте токен, полученный от screenshotapi.net"
 	}
 
 	def __init__(self):
@@ -63,7 +63,6 @@ class ShotModuleMod(loader.Module):
 						lambda: self.strings("_cfg_token"),
 						validator=loader.validators.Union(
 								loader.validators.Hidden(),
-								loader.validators.NoneType(),
 							),
 					),
 			)
