@@ -1,4 +1,4 @@
-__version__ = (0, 0, 3)
+__version__ = (0, 0, 4)
 
 """
 888    d8P   .d8888b.  888    888     888b     d888  .d88888b.  8888888b.   .d8888b.  
@@ -61,9 +61,7 @@ class ShotModuleMod(loader.Module):
 						"token",
 						None,
 						lambda: self.strings("_cfg_token"),
-						validator=loader.validators.Union(
-								loader.validators.Hidden(),
-							),
+						validator=loader.validators.Hidden(),
 					),
 			)
 
