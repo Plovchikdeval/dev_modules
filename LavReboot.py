@@ -1,4 +1,4 @@
-__version__ = (0, 0, 3)
+__version__ = (1, 4, 8, 8)
 
 """
 	█ █▀█ █▄█ █ ▄█   █▀▄ █▀█ █▀▀
@@ -47,6 +47,7 @@ class LavReboot(loader.Module):
 				pass
 		return None
 
+	@loader.sudo
 	@loader.command(en_doc="Restart", ru_doc="Перезагрузить")
 	async def lhrestart(self, message: Message):
 		platform = utils.get_named_platform()
@@ -60,7 +61,7 @@ class LavReboot(loader.Module):
 		found_process = self.find_process(user, process)
 
 		if found_process:
-			await self.invoke(command="restart", args=["-f"], message=message, edit=True)
+			await self.invoke(command="restart", args="-f", message=message)
 			pid = found_process.info['pid']
 			try:
 				os.kill(pid, signal.SIGABRT)
