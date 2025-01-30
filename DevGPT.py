@@ -18,6 +18,7 @@ Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 Inter
 # meta developer: @kshmods
 # meta banner: https://kappa.lol/nfF_A
 # requires: requests
+# change-log: TEST CHANGE LOG
 
 import logging
 import io
