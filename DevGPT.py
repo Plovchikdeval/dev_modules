@@ -1,5 +1,5 @@
-__version__ = (7, 0, 1)
-# change-log: SHOW TO DESAI.
+__version__ = (7, 0, 0)
+# change-log: ADD NEW MODELS! MORE DETAILS IN .dgmodels
 
 """
 888    d8P   .d8888b.  888    888     888b     d888  .d88888b.  8888888b.   .d8888b.  
