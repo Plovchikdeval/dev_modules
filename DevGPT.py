@@ -10,15 +10,15 @@ __version__ = (1, 0, 20)
 888   Y88b  Y88b  d88P 888    888 d8b 888   "   888 Y88b. .d88P 888  .d88P Y88b  d88P 
 888    Y88b  "Y8888P"  888    888 Y8P 888       888  "Y88888P"  8888888P"   "Y8888P" 
                                                            
-(C) 2024 t.me/devjmodules
+(C) 2025 t.me/kshmods
 Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
 """
 # scope: hikka_only
 # scope: hikka_min 1.3.3
+# change-log: TEST CHANGE LOG
 # meta developer: @kshmods
 # meta banner: https://kappa.lol/nfF_A
 # requires: requests
-# change-log: TEST CHANGE LOG
 
 import logging
 import io
