@@ -1,4 +1,5 @@
 __version__ = (1, 0, 20)
+# change-log: TEST CHANGE LOG
 
 """
 888    d8P   .d8888b.  888    888     888b     d888  .d88888b.  8888888b.   .d8888b.  
@@ -15,7 +16,6 @@ Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 Inter
 """
 # scope: hikka_only
 # scope: hikka_min 1.3.3
-# change-log: TEST CHANGE LOG
 # meta developer: @kshmods
 # meta banner: https://kappa.lol/nfF_A
 # requires: requests
