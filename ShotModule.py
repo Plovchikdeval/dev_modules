@@ -135,4 +135,3 @@ class ShotModuleMod(loader.Module):
 		except Exception as e:
 			logger.error(str(e), exc_info=True)
 			await utils.answer(message, self.strings("err"))
-
