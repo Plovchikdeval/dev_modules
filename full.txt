@@ -16,4 +16,5 @@ encmod
 memberslist
 stats
 weather
+ShotModule
 UpgradedNeofetch
