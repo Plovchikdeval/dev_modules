@@ -8,7 +8,7 @@
 888   Y88b  Y88b  d88P 888    888 d8b 888   "   888 Y88b. .d88P 888  .d88P Y88b  d88P 
 888    Y88b  "Y8888P"  888    888 Y8P 888       888  "Y88888P"  8888888P"   "Y8888P"
                                                                      
-(C) 2024 t.me/devjmodules
+(C) 2025 t.me/kshmods
 Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
 """
 
@@ -31,13 +31,13 @@ class TextToSpeechMod(loader.Module):
         if len(event.text.split(" ", maxsplit=1)) > 1:
             text = event.text.split(" ", maxsplit=1)[1]
         else:
-            await event.edit("❌ Пожалуйста, укажите текст для генерации.")
+            await utils.answer(event, "❌ Пожалуйста, укажите текст для генерации.")
             return
         try:
             lang = detect(text)
             voice = "en-US-GuyNeural" if lang == 'en' else "ru-RU-DmitryNeural"
         except Exception as e:
-            await event.reply("Не удалось определить язык текста.")
+            await utils.answer(event, "Не удалось определить язык текста.")
             return
         communicate = edge_tts.Communicate(text, voice=voice)
         await communicate.save("voice.mp3")

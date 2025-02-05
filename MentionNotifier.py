@@ -16,6 +16,7 @@ Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 Inter
 
 from .. import loader, utils
 from telethon.tl.types import Message
+import html
 
 @loader.tds
 class MentionNotifierMod(loader.Module):
@@ -48,9 +49,9 @@ class MentionNotifierMod(loader.Module):
         if user_id not in blacklist:
             blacklist.append(user_id)
             self.set("BLACKLIST", blacklist)
-            await message.edit(f"Added {user_id} to the blacklist")
+            await utils.answer(message, f"Added {user_id} to the blacklist")
         else:
-            await message.edit(f"{user_id} is already in the blacklist")
+            await utils.answer(message, f"{user_id} is already in the blacklist")
 
     async def mnwlcmd(self, message):
         """Adds a chat to the whitelist"""
@@ -63,11 +64,11 @@ class MentionNotifierMod(loader.Module):
         if chat_id not in whitelist:
             whitelist.append(chat_id)
             self.set("WHITELIST", whitelist)
-            await message.edit(f"Added {chat_id} to the whitelist")
+            await utils.answer(message, f"Added {chat_id} to the whitelist")
         else:
             whitelist.remove(chat_id)
             self.set("WHITELIST", whitelist)
-            await message.edit(f"Removed {chat_id} from the whitelist")
+            await utils.answer(message, f"Removed {chat_id} from the whitelist")
 
     async def mnunblockcmd(self, message):
         """Removes a user from the blacklist"""
@@ -80,9 +81,9 @@ class MentionNotifierMod(loader.Module):
         if user_id in blacklist:
             blacklist.remove(user_id)
             self.set("BLACKLIST", blacklist)
-            await message.edit(f"Removed {user_id} from the blacklist")
+            await utils.answer(message, f"Removed {user_id} from the blacklist")
         else:
-            await message.edit(f"{user_id} is not in the blacklist")
+            await utils.answer(message, f"{user_id} is not in the blacklist")
 
     async def mnlistcmd(self, message):
         """Lists the users to ignore mentions from and chats to notify mentions from"""
@@ -108,7 +109,7 @@ class MentionNotifierMod(loader.Module):
                     output += f"<emoji document_id=4974608010455286340>🛑</emoji> {chat}\n"
         else:
             output += "No chats to notify mentions from"
-        await message.edit(output)
+        await utils.answer(message, output)
 
     async def watcher(self, message : Message):
         if isinstance(message, Message):
@@ -126,5 +127,5 @@ class MentionNotifierMod(loader.Module):
                     if sender.username:
                         notification = f"You were mentioned by @{sender.username} in <b>{chat.title}</b>.\nLink: {chat_link}"
                     else:
-                        notification = f"You were mentioned by <i><b>{sender.first_name}</b></i> in <b>{chat.title}</b>.\nLink: {chat_link}"
+                        notification = f"You were mentioned by <i><b>{html.escape(sender.first_name)} </b></i>in <b>{chat.title}</b>.\nLink: {chat_link}"
                     await self.inline.bot.send_message(me.id, notification, parse_mode="html")

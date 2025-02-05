@@ -16,5 +16,8 @@ encmod
 memberslist
 stats
 weather
+screenspam
+p2g
+InlineButtons
 ShotModule
 UpgradedNeofetch
