@@ -15,20 +15,35 @@ Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 Inter
 # meta developer: @kshmods
 
 from .. import loader, utils
-import pyfiglet
+from telethon import functions, types
 
-@loader.tds
-class AsciiMod(loader.Module):
-    """Пишет ASCII шрифтом"""
-    strings = {"name": "Ascii"}
+def register(cb):
+	cb(ScrSpamMod())
 
-    @loader.owner
-    async def asciicmd(self, event):
-        """Пишет ASCII шрифтом. Использование: .ascii <текст>"""
-        if len(event.text.split(" ", maxsplit=1)) > 1:
-            text = event.text.split(" ", maxsplit=1)[1]
-        else:
-            await utils.answer(event, "❌ Пожалуйста, укажите текст для генерации.")
-            return
-        art = pyfiglet.figlet_format(text)
-        await utils.answer(event, f"```\n⁠{art}\n```", parse_mode="markdown")
+
+class ScrSpamMod(loader.Module):
+	"""Screenshot Spammer"""
+
+	strings = {'name': 'ScrSpam'}
+
+	def __init__(self):
+		self.name = self.strings['name']
+		self._me = None
+		self._ratelimit = []
+
+	async def client_ready(self, client, db):
+		self._db = db
+		self._client = client
+		self.me = await client.get_me()
+
+	async def scrscmd(self, message):
+		""".scrs <amount>"""
+		a = 1
+		r = utils.get_args(message)
+		if r and r[0].isdigit():
+			a = int(r[0])
+		await message.edit("Screenshoting...")
+		for _ in range(a):
+			await message.client(functions.messages.SendScreenshotNotificationRequest(peer=await self.client.get_entity(message.chat_id), reply_to=types.InputReplyToMessage(reply_to_msg_id=message.id)))
+		await message.delete()
+		

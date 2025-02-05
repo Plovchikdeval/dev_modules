@@ -17,9 +17,10 @@ Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 Inter
 import asyncio
 import time
 from telethon import functions
-from .. import loader
+from .. import loader, utils
 
 class Farm:
+
     async def automining(self):
         async with self._client.conversation(self._bot) as conv:
             check_mine = "моя шахта"
@@ -74,12 +75,21 @@ class Farm:
                 ('мой карьер', [0, 1]),
             ]
             for command, clicks in commands:
-                await conv.send_message(command)
-                r = await conv.get_response()
-
+                try:
+                    await conv.send_message(command)
+                    r = await conv.get_response(timeout=15)
+                except asyncio.exceptions.TimeoutError:
+                    continue
+    
+                if not r.buttons:
+                    continue
+    
                 for click in clicks:
                     await asyncio.sleep(3)
-                    await r.click(click)
+                    try:
+                        await r.click(click)
+                    except Exception:
+                        pass
 
 class BfgMod(loader.Module, Farm):
     """
@@ -114,26 +124,29 @@ class BfgMod(loader.Module, Farm):
 
     @loader.loop(interval=1, autostart=True)
     async def main_loop(self):
-        if self.config["AutoFarm"] and (not self.get("Tree_time") or (time.time() - self.get("Tree_time")) >= 3600):
-            await self.autofarm()
-            self.set("Tree_time", int(time.time()))
+        try:
+            if self.config["AutoFarm"] and (not self.get("Tree_time") or (time.time() - self.get("Tree_time")) >= 3600):
+                await self.autofarm()
+                self.set("Tree_time", int(time.time()))
+    
+            if self.config["AutoMining"] and (not self.get("Mining_time") or (time.time() - self.get("Mining_time")) >= 3600*2+10):
+                await self.automining()
+                self.set("Mining_time", int(time.time()))
+    
+            if self.config["EveryDayBonus"] and (not self.get("Bonus_time") or (time.time() - self.get("Bonus_time")) >= 3600*24+10):
+                await self.everyday_bonus()
+                self.set("Bonus_time", int(time.time()))
 
-        if self.config["AutoMining"] and (not self.get("Mining_time") or (time.time() - self.get("Mining_time")) >= 3600*2+10):
-            await self.automining()
-            self.set("Mining_time", int(time.time()))
-
-        if self.config["EveryDayBonus"] and (not self.get("Bonus_time") or (time.time() - self.get("Bonus_time")) >= 3600*24+10):
-            await self.everyday_bonus()
-            self.set("Bonus_time", int(time.time()))
-
-        await self._client(functions.messages.ReadMentionsRequest(self._bot))
+            await self._client(functions.messages.ReadMentionsRequest(self._bot))
+        except Exception as e:
+            self.log.error(f"Error in main_loop: {e}")
 
     @loader.command()
     async def bfg(self, message):
         """Начать автоматическую фарму."""
         self.config["AutoFarm"] = True
         self.main_loop.start()
-        await message.edit("Автоматическая фарма включена.")
+        await utils.answer(message, "Автоматическая фарма включена.")
 
     @loader.command()
     async def rstbfg(self, message):
@@ -141,15 +154,15 @@ class BfgMod(loader.Module, Farm):
         self.config["AutoFarm"] = False
         self.main_loop.stop()
         await asyncio.sleep(1)
+        await utils.answer(message, "Автоматическая фарма перезапущена.")
         await self.autofarm()
         self.set("Tree_time", time.time() + 3600)
         self.config["AutoFarm"] = True
         self.main_loop.start()
-        await message.edit("Автоматическая фарма перезапущена.")
         
     @loader.command()
     async def bfgstop(self, message):
         """Остановить автоматическую фарму."""
         self.config["AutoFarm"] = False
         self.main_loop.stop()
-        await message.edit("Автоматическая фарма остановлена.")
+        await utils.answer(message, "Автоматическая фарма остановлена.")

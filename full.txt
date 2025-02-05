@@ -4,7 +4,7 @@ VoiceChat
 voicechatinstaller
 LavReboot
 PassManager
-CMDDJModule
+ChatModule
 MentionNotifier
 PfpRepeater
 URLModule
@@ -17,3 +17,6 @@ send
 memberslist
 stats
 weather
+screenspam
+p2g
+InlineButtons

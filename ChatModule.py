@@ -19,17 +19,17 @@ from .. import loader, security, utils
 from datetime import timedelta, datetime
 from ..inline.types import InlineCall # type: ignore
 from telethon import functions
-from telethon.tl.functions.messages import ExportChatInviteRequest, DeleteChatUserRequest, CreateChatRequest, DeleteChatRequest, GetHistoryRequest, AddChatUserRequest, ImportChatInviteRequest, ExportChatInviteRequest
+from telethon.tl.functions.messages import ExportChatInviteRequest, DeleteChatUserRequest, CreateChatRequest, DeleteChatRequest, GetHistoryRequest, AddChatUserRequest, ImportChatInviteRequest
 from hikkatl.tl.types import Message
-from telethon.tl.functions.channels import GetFullChannelRequest, CreateChannelRequest, EditBannedRequest, EditTitleRequest, EditAdminRequest, JoinChannelRequest, DeleteChannelRequest, GetParticipantsRequest, GetFullChannelRequest
+from telethon.tl.functions.channels import LeaveChannelRequest, GetFullChannelRequest, CreateChannelRequest, EditBannedRequest, EditTitleRequest, EditAdminRequest, JoinChannelRequest, DeleteChannelRequest, GetParticipantsRequest
 from telethon.tl.types import *
 from telethon.errors import *
+from telethon.hints import EntityLike
 from telethon.errors.rpcerrorlist import YouBlockedUserError, AdminRankInvalidError
 
 @loader.tds
 class CMDDJ(loader.Module):
-    """Модуль для админов чатов
-    Made by Desai"""
+    """Модуль для админов чатов"""
     
     strings_ru = {
         "name": "ChatModule",
@@ -72,20 +72,19 @@ class CMDDJ(loader.Module):
         "no_user": "Пользователь не найден.",
         "unknown_user": "Неизвестный пользователь.",
         "unmuted": "Пользователь {first_name}(<code>{user_id}</code>) был размучен.",
-        "muted": "Пользователь {first_name}(<code>{user_id}</code>) был замучен на {mute_time} миинут.",
+        "muted": "Пользователь {first_name} (<code>{user_id}</code>) был замучен на {mute_time} {unit}.",
         "users_too_much": "Лимит приглашения пользователей достигнут.",
         "kick_all": "{user_count} участников будут кикнуты.",
         "kicked": "Пользователь {name}(<code>{id}</code>) был кикнут.",
         "chat_type_error": "Не удалось определить тип чата.",
         "invite_success": "<b>Пользователь приглашён успешно!</b>",
         "privacy_settings_error": "<b>Настройки приватности пользователя не позволяют пригласить его.</b>",
-        "deleted_account": "<b>Аккаунт пользователя удалён.</b>",
-        "blocked_contact": "<b>Вы заблокировали этого пользователя.</b>",
+        "deleted_account": "<b>Аккаунт пользователя удалён.</b>\n",
+        "blocked_contact": "<b>Вы заблокировали этого пользователя.</b>\n",
         "search_deleted_accounts": "<emoji document_id=5188311512791393083>🔎</emoji> <b>Поиск удалённых аккаунтов</b>",
         "no_deleted_accounts": "<emoji document_id=5341509066344637610>😎</emoji> <b>Здесь нет ни одного удалённого аккаунта</b>",
         "kicked_deleted_accounts": "<emoji document_id=5328302454226298081>🫥</emoji> <b>Удалено {count} удалённых аккаунтов</b>",
         "chat_info_header": "Информация о чате:\n",
-        "chat_id": "<b>ID:</b> {id}\n",
         "group_title": "<b>Название группы:</b> {title}\n",
         "previous_title": "<b>Предыдущее название:</b> {title}\n",
         "group_type_public": "<b>Тип группы:</b> Публичный\n",
@@ -132,11 +131,35 @@ class CMDDJ(loader.Module):
         "data_fetch_error": "Ошибка получения данных",
         "this_chat": "этом чате",
         "members_in_chat": "Участников в {title}:\n",
+        "steal_complete": "({count}) Просто прикол)",
+        "my_id": "<emoji document_id=5208454037531280484>💜</emoji> <b>Мой ID</b>: <code>{id}</code>",
+        "users_id": "<emoji document_id=6035084557378654059>👤</emoji> <b>ID пользователя</b>: <code>{id}</code>",
+        "chat_id": "<emoji document_id=5886436057091673541>💬</emoji> <b>ID чата</b>: <code>{id}</code>",
+        "minutes": "минут",
+        "hours": "часов",
+        "days": "дней",
+        "weeks": "недели",
+        "get_rights_header": "<b>Ваши права в этом чате:</b>\n\n",
+        "admin_rights": "🔹 <u>Права администратора:</u>\n",
+        "not_admin": "🔹 <u>Права администратора:</u> ❌ Вы не администратор\n",
+        "restricts": "\n🔹 <u>Ограничения:</u>\n",
+        "no_restricts": "\n🔹 <u>Ограничения:</u> ✅ Нет ограничений\n",
+        "invalid_number": "❗ Укажите корректное количество сообщений для удаления.",
+        "deleted_messages": "✅ Удалено {count} сообщений.",
+        "failed_get_rights": "<b>Ваши права не могут быть определены в этом чате.</b>",
     }
 
     strings = {
         "name": "ChatModule",
+        "deleted_messages": "✅ {count} messages deleted.",
         "loading": "🕐 <b>Processing data...</b>",
+        "invalid_number": "❗ Specify the correct number of messages to delete.",
+        "restricts": "\n🔹 <u>Restrictions:</u>\n",
+        "no_restricts": "\n🔹 <u>Restrictions:</u> ✅ No restrictions\n",
+        "admin_rights": "🔹 <u>Admin rights:</u>\n",
+        "failed_get_rights": "<b>Your rights cannot be determined in this chat.</b>",
+        "get_rights_header": "<b>Your rights in this chat:</b>\n\n",
+        "not_admin": "🔹 <u>Admin rights:</u> ❌ You are not an admin\n",
         "not_a_chat": "<emoji document_id=5312526098750252863>❌</emoji> <b>The command cannot be run in private messages.</b>",
         "no_rights": "<emoji document_id=5318764049121420145>🫤</emoji> <b>I don't have enough rights.</b>",
         "no_user": "<emoji document_id=5312383351217201533>⚠️</emoji> <b>You did not specify a user.</b>",
@@ -175,20 +198,19 @@ class CMDDJ(loader.Module):
         "no_user": "User not found.",
         "unknown_user": "Unknown user.",
         "unmuted": "User {first_name}(<code>{user_id}</code>) was unmuted.",
-        "muted": "User {first_name}(<code>{user_id}</code>) was muted for {mute_time} minutes.",
+        "muted": "User {first_name} (<code>{user_id}</code>) was muted for {mute_time} {unit}.",
         "users_too_much": "The user invitation limit has been reached.",
         "kick_all": "{user_count} participants will be kicked.",
         "kicked": "User {name}(<code>{id}</code>) was kicked.",
         "chat_type_error": "Failed to determine chat type.",
         "invite_success": "<b>User successfully invited!</b>",
         "privacy_settings_error": "<b>The user's privacy settings do not allow inviting them.</b>",
-        "deleted_account": "<b>The user's account is deleted.</b>",
-        "blocked_contact": "<b>You have blocked this user.</b>",
+        "deleted_account": "<b>The user's account is deleted.</b>\n",
+        "blocked_contact": "<b>You have blocked this user.</b>\n",
         "search_deleted_accounts": "<emoji document_id=5188311512791393083>🔎</emoji> <b>Searching for deleted accounts</b>",
         "no_deleted_accounts": "<emoji document_id=5341509066344637610>😎</emoji> <b>No deleted accounts found here</b>",
         "kicked_deleted_accounts": "<emoji document_id=5328302454226298081>🫥</emoji> <b>Removed {count} deleted accounts</b>",
         "chat_info_header": "Chat information:\n",
-        "chat_id": "<b>ID:</b> {id}\n",
         "group_title": "<b>Group title:</b> {title}\n",
         "previous_title": "<b>Previous title:</b> {title}\n",
         "group_type_public": "<b>Group type:</b> Public\n",
@@ -234,7 +256,15 @@ class CMDDJ(loader.Module):
         "users_in_chat_caption": "<b>Users in {}:</b>",
         "data_fetch_error": "Error fetching data",
         "this_chat": "this chat",
-        "members_in_chat": "Members in {title}:\n"
+        "members_in_chat": "Members in {title}:\n",
+        "steal_complete": "({count}) just for fun)",
+        "my_id": "<emoji document_id=5208454037531280484>💜</emoji> <b>My ID</b>: <code>{id}</code>",
+        "users_id": "<emoji document_id=6035084557378654059>👤</emoji> <b>User's ID</b>: <code>{id}</code>",
+        "chat_id": "<emoji document_id=5886436057091673541>💬</emoji> <b>Chat ID</b>: <code>{id}</code>",
+        "minutes": "minutes",
+        "hours": "hours",
+        "days": "days",
+        "weeks": "weeks",
     }
 
     @loader.owner
@@ -243,15 +273,21 @@ class CMDDJ(loader.Module):
         self.db = db
         self.muted = []
 
-    @loader.owner
-    async def fullrightscmd(self, message: Message):
+    @loader.command()
+    async def leavecmd(self, message: Message):
+        """Покинуть чат"""
+        await message.delete()
+        await message.client(LeaveChannelRequest((await message.get_chat()).id))
+
+    @loader.command()
+    async def fullrights(self, message: Message):
         """<пользователь> [роль (aka префикс)] — Повышение пользователя до администратора с полными правами."""
         if message.is_private:
             return await utils.answer(
                 message, self.strings("not_a_chat", message)
             )
 
-        rank, user_id = "Admin", None
+        rank, user_id = "", None
         chat = await message.get_chat()
         args = utils.get_args_raw(message)
         reply = await message.get_reply_message()
@@ -282,15 +318,15 @@ class CMDDJ(loader.Module):
                     ChatAdminRights(
                         other=True,
                         change_info=True,
-                        post_messages=True if chat.broadcast else None,
-                        edit_messages=True if chat.broadcast else None,
+                        post_messages=True if message.is_channel or chat else None,
+                        edit_messages=True if message.is_channel or chat else None,
                         delete_messages=True,
                         ban_users=True,
                         invite_users=True,
                         add_admins=True,
                         anonymous=None,
-                        pin_messages=True if not chat.broadcast else None,
-                        manage_call=True if not chat.broadcast else None
+                        pin_messages=True if not message.is_channel or chat else None,
+                        manage_call=True if not message.is_channel or chat else None
                     ),
                     rank
                 )
@@ -305,6 +341,41 @@ class CMDDJ(loader.Module):
                 rank=rank
             )
         )
+
+    @loader.command()
+    async def myrights(self, message):
+        """Проверить ваши права в текущем чате"""
+        chat = await message.get_chat()
+        user = await message.get_sender()
+        chat_id = message.chat_id
+
+        if not chat or not chat_id:
+            return await utils.answer(message, self.strings("not_a_chat", message))
+
+        if not hasattr(chat, "admin_rights") and not hasattr(chat, "banned_rights"):
+            return await utils.answer(message, self.strings('failed_get_rights', message))
+
+
+        admin_rights = getattr(chat, "admin_rights", None)
+        banned_rights = getattr(chat, "banned_rights", None)
+
+        result = self.strings('get_rights_header')
+
+        if admin_rights and isinstance(admin_rights, ChatAdminRights):
+            result += self.strings('admin_rights')
+            for right, value in admin_rights.to_dict().items():
+                result += f"  - {right}: {'✅' if value else '❌'}\n"
+        else:
+            result += self.strings('not_admin')
+
+        if banned_rights and isinstance(banned_rights, ChatBannedRights):
+            result += self.strings('restricts')
+            for right, value in banned_rights.to_dict().items():
+                result += f"  - {right}: {'❌' if value else '✅'}\n"
+        else:
+            result += self.strings('no_restricts')
+
+        await utils.answer(message, result)
 
     @loader.owner
     async def promotecmd(self, message: Message):
@@ -706,12 +777,15 @@ class CMDDJ(loader.Module):
             )
         )
 
-    @loader.owner
-    async def createcmd(self, message):
-        """Используй .create <g|s|c> <название>, чтобы создать группу, супергруппу или канал."""
+    @loader.command()
+    async def create(self, message):
+        """ <g|s|c> <название> <tag: OPTIONAL> | чтобы создать группу, супергруппу или канал."""
         args = utils.get_args_raw(message).split(" ")
         try:
-            title = utils.get_args_raw(message).split(" ", 1)[1]
+            if args[-1].startswith("@"):
+                title = " ".join(args[1:-1])
+            else:
+                title = " ".join(args[1:])
             if "g" in args[0]:
                 r = await message.client(
                     CreateChatRequest(users=["missrose_bot"], title=title)
@@ -720,64 +794,121 @@ class CMDDJ(loader.Module):
                 await message.client(
                     DeleteChatUserRequest(chat_id=created_chat, user_id="@missrose_bot")
                 )
+                if args[-1].startswith("@"):
+                    try:
+                        await message.client(functions.channels.UpdateUsernameRequest(channel=r.chats[0], username=args[-1][1:]))
+                    except UsernameOccupiedError:
+                        return await utils.answer(message,f"Username {args[-1]} occupied")
+                    except UsernameInvalidError:
+                        return await utils.answer(message,"The username must match the pattern: [a-zA-Z][\\w\\d]{3,30}[a-zA-Z\\d]")
             elif "s" in args[0]:
                 r = await message.client(
                     CreateChannelRequest(title=title, about="", megagroup=True)
                 )
+                if args[-1].startswith("@"):
+                    try:
+                        await message.client(functions.channels.UpdateUsernameRequest(channel=r.chats[0], username=args[-1][1:]))
+                    except UsernameOccupiedError:
+                        return await utils.answer(message,f"Username {args[-1]} occupied")
+                    except UsernameInvalidError:
+                        return await utils.answer(message,"The username must match the pattern: [a-zA-Z][\\w\\d]{3,30}[a-zA-Z\\d]")
             elif "c" in args[0]:
                 r = await message.client(
                     CreateChannelRequest(title=title, about="", megagroup=False)
                 )
+                if args[-1].startswith("@"):
+                    try:
+                        await message.client(functions.channels.UpdateUsernameRequest(channel=r.chats[0], username=args[-1][1:]))
+                    except UsernameOccupiedError:
+                        return await utils.answer(message, f"Username {args[-1]} occupied")
+                    except UsernameInvalidError:
+                        return await utils.answer(message, "The username must match the pattern: [a-zA-Z][\\w\\d]{3,30}[a-zA-Z\\d]")
             created_chat = r.chats[0].id
             result = await message.client(ExportChatInviteRequest(peer=created_chat))
-            await message.edit(
+            await utils.answer(message,
                 f'<b>Группа "{title}" создана.\nЛинк: {result.link}.</b>'
             )
         except IndexError:
-            return await message.edit(self.strings("invalid_args", message))
+            return await utils.answer(message, self.strings("invalid_args", message))
         except UnboundLocalError:
-            return await message.edit(self.strings("invalid_args", message))
+            return await utils.answer(message, self.strings("invalid_args", message))
         except UserRestrictedError:
-            return await message.edit(self.strings("spam_ban", message))
+            return await utils.answer(message, self.strings("spam_ban", message))
 
     @loader.owner
     async def useridcmd(self, message):
-        """[reply] | Get User ID"""
+        """[reply] | Получить айди пользователя"""
         reply = await message.get_reply_message()
         if reply != None:
-            await utils.answer(message, f"<emoji document_id=5436024756610546212>⚡</emoji> <b>User ID</b>: <code>{reply.sender_id}</code>")
+            await utils.answer(message, self.strings("users_id", message).format(id=reply.sender_id))
         else:
             await utils.answer(message, self.strings["Error_reply"])
 
     @loader.owner
     async def idcmd(self, message):
-        """| Get your ID"""
-        await utils.answer(message, f"<emoji document_id=5436024756610546212>⚡</emoji> <b>Your ID</b>: <code>{message.sender_id}</code>")
+        """| Получить свой айди"""
+        await utils.answer(message, self.strings("my_id", message).format(id=message.sender_id))
+
+    @loader.command()
+    async def chatid(self, message):
+        """| Получить айди чата"""
+        await utils.answer(message, self.strings("chat_id", message).format(id=utils.get_chat_id(message)))
 
     @loader.owner
-    async def chatidcmd(self, message):
-        """| Get chat ID"""
-        await utils.answer(message, f"<emoji document_id=5436024756610546212>⚡</emoji> <b>Chat ID</b>: <code>{message.peer_id.channel_id}</code>")
+    async def delcmd(self, message):
+        """<reply/count> | Удаляет сообщения."""
+        args = utils.get_args_raw(message)
+        reply = await message.get_reply_message()
 
-    @loader.owner
-    async def delcmd(self, event):
-        """Удаляет сообщение. Использование: ?del <reply>"""
-        reply = await event.get_reply_message()
+        if args:
+            if not args.isdigit():
+                return await utils.answer(message, self.strings("invalid_args", message))
+            chat = message.chat
+            purge_count = int(args)
+            await message.delete()
+            await self._purge_user_messages(chat, (await self.client.get_me()).id, purge_count)
+        
         if not reply:
-            await utils.answer(event, self.strings("no_reply", event))
-            return await event.delete()
+            return await utils.answer(message, self.strings("no_reply", message))
+
         try:
-            await event.delete()
+            await message.delete()
             await reply.delete()
         except Exception:
             pass
+    
+    async def _purge_user_messages(
+        self,
+        chat: EntityLike,
+        user_id: int,
+        purge_count: int,
+    ) -> int:
+        msgs = []
+        msg_count = 0
+        itermsg = self._client.iter_messages(entity=chat)
+        i = 0
+        async for msg in itermsg:
+            if msg.sender_id == user_id:
+                if i == purge_count:
+                    break
+                i += 1
+                msgs += [msg.id]
+                msg_count += 1
+                if len(msgs) >= 99:
+                    await self._client.delete_messages(chat, msgs)
+                    msgs.clear()
+
+        if msgs:
+            await self._client.delete_messages(chat, msgs)
+
+        return msg_count
 
     @loader.owner
     async def dgccmd(self, event):
         """Удаляет группу/канал по ссылке или ID. Использование: .dgc <ID или ссылка>"""
         args = utils.get_args(event)
         if not args:
-            await event.edit(self.strings("invalid_args", event))
+            await utils.answer(event, self.strings("invalid_args", event))
             return
         
         link = args[0] if isinstance(args, list) else args
@@ -788,7 +919,7 @@ class CMDDJ(loader.Module):
                 chat_id = await event.client.get_entity(link)
                 chat_id = chat_id.id
             else:
-                await event.edit(self.strings("invalid_args", event))
+                await utils.answer(event, self.strings("invalid_args", event))
                 return
             try:
                 await event.client(DeleteChannelRequest(chat_id))
@@ -799,26 +930,26 @@ class CMDDJ(loader.Module):
                     chat_type = self.strings("of_chat", event)
                 except Exception as e:
                     if "CHANNEL_PRIVATE" in str(e):
-                        await event.edit("❌ Чат недоступен или приватный.")
+                        await utils.answer(event, "❌ Чат недоступен или приватный.")
                         return
                     elif "CHAT_ADMIN_REQUIRED" in str(e):
-                        await event.edit(self.strings("no_rights", event))
+                        await utils.answer(event, self.strings("no_rights", event))
                         return
                     elif "Invalid object ID for a chat." in str(e):
-                        await event.edit(self.strings("invalid_args", event))
+                        await utils.answer(event, self.strings("invalid_args", event))
                         return
-                    await event.edit(self.strings("invalid_args", event).format(error=str(e)))
+                    await utils.answer(event, self.strings("invalid_args", event).format(error=str(e)))
                     return
-            await event.edit(self.strings("successful_delete", event).format(chat_type=chat_type))
+            await utils.answer(event, self.strings("successful_delete", event).format(chat_type=chat_type))
 
         except ChatAdminRequiredError:
-            await event.edit(self.strings("no_rights", event))
+            await utils.answer(event, self.strings("no_rights", event))
         except ChannelPrivateError:
-            await event.edit(self.strings("chat_unavailable", event))
+            await utils.answer(event, self.strings("chat_unavailable", event))
         except RpcError as e:
-            await event.edit(self.strings("rpc_error", event).format(error=e))
+            await utils.answer(event, self.strings("rpc_error", event).format(error=e))
         except Exception as e:
-            await event.edit(self.strings("rpc_error", event).format(error=e))
+            await utils.answer(event, self.strings("rpc_error", event).format(error=e))
 
     @loader.owner
     async def joincmd(self, event):
@@ -826,7 +957,7 @@ class CMDDJ(loader.Module):
 
         link = utils.get_args_raw(event)
         if not link:
-            await event.edit(self.strings("invalid_args", event))
+            await utils.answer(event, self.strings("invalid_args", event))
             return
 
         link = link.strip()
@@ -834,18 +965,18 @@ class CMDDJ(loader.Module):
             if "joinchat" in link or "+" in link:
                 invite_hash = link.split("/")[-1].replace("joinchat/", "").replace("+", "")
                 await self.client(ImportChatInviteRequest(invite_hash))
-                await event.edit(self.strings("join_success", event).format(link=link))
+                await utils.answer(event, self.strings("join_success", event).format(link=link))
             else:
                 entity = await self.client.get_entity(link)
                 await self.client(JoinChannelRequest(entity))
                 title = entity.title if hasattr(entity, 'title') else self.strings("no_title", event)
-                await event.edit(self.strings("join_success", event).format(link=link))
+                await utils.answer(event, self.strings("join_success", event).format(link=link))
         except InviteHashExpiredError:
-            await event.edit(self.strings("invite_hash_expired", event))
+            await utils.answer(event, self.strings("invite_hash_expired", event))
         except ValueError:
-            await event.edit(self.strings("invalid_link", event))
+            await utils.answer(event, self.strings("invalid_link", event))
         except Exception as e:
-            await event.edit(self.strings("rpc_error", event).format(error=str(e)))
+            await utils.answer(event, self.strings("rpc_error", event).format(error=str(e)))
 
     @loader.owner
     async def whoisownercmd(self, event):
@@ -858,11 +989,11 @@ class CMDDJ(loader.Module):
                 if isinstance(admin.participant, ChannelParticipantCreator):
                     owner_name = f"{admin.first_name} {admin.last_name or ''}".strip()
                     owner_id = admin.id
-                    await event.edit(self.strings("owner_info").format(owner_id=owner_id, owner_name=owner_name))
+                    await utils.answer(event, self.strings("owner_info").format(owner_id=owner_id, owner_name=owner_name))
                     return
-            await event.edit("Владелец не найден.")
+            await utils.answer(event, "Владелец не найден.")
         except Exception as e:
-            await event.edit(self.strings("rpc_error", event).format(error=str(e)))
+            await utils.answer(event, self.strings("rpc_error", event).format(error=str(e)))
 
     @loader.owner
     async def renamecmd(self, message):
@@ -870,7 +1001,7 @@ class CMDDJ(loader.Module):
         try:
             args = utils.get_args(message)
             if not args:
-                await message.edit(self.strings("invalid_args", message))
+                await utils.answer(message, self.strings("invalid_args", message))
                 return
 
             new_name = " ".join(args)
@@ -883,16 +1014,16 @@ class CMDDJ(loader.Module):
                     title=new_name
                 ))
             except ChatAdminRequiredError:
-                await message.edit(self.strings("no_rights", message))
+                await utils.answer(message, self.strings("no_rights", message))
                 return
             except Exception as e:
-                await message.edit(self.strings("rpc_error", message).format(error=e))
+                await utils.answer(message, self.strings("rpc_error", message).format(error=e))
                 return
 
-            await message.edit(self.strings("title_changed", message).format(new_name=new_name))
+            await utils.answer(message, self.strings("title_changed", message).format(new_name=new_name))
             await message.delete()
         except Exception as e:
-            await message.edit(self.strings("rpc_error", message).format(error=str(e)))
+            await utils.answer(message, self.strings("rpc_error", message).format(error=str(e)))
 
     @loader.owner
     async def memberscmd(self, event):
@@ -903,9 +1034,9 @@ class CMDDJ(loader.Module):
                 members = await event.client.get_participants(chat)
                 real_members = [member for member in members if not member.bot]
                 count = len(real_members)
-                await event.edit(self.strings("members_count").format(count=count))
+                await utils.answer(event, self.strings("members_count").format(count=count))
             except Exception as e:
-                await event.edit(self.strings("rpc_error", event).format(error=e))
+                await utils.answer(event, self.strings("rpc_error", event).format(error=e))
         else:
             return await utils.answer(event, self.strings("not_a_chat", event))
 
@@ -920,15 +1051,14 @@ class CMDDJ(loader.Module):
                     if user.id == (await self.client.get_me()).id:
                         continue
                     await self.client.edit_permissions(chat.id, user.id, view_messages=False)
-                    await asyncio.sleep(5)
                 except Exception as e:
                     pass
 
     @loader.owner
     async def chatinfocmd(self, chatinfo):
-        """Используй .chatinfo <айди чата>; ничего"""
+        """ <айди чата>"""
         if chatinfo.chat:
-            await chatinfo.edit(self.strings("loading", chatinfo))
+            await utils.answer(chatinfo, self.strings("loading", chatinfo))
             await chatinfo.delete()
             chat = await self.get_chatinfo(chatinfo)
             caption = await self.fetch_info(chat, chatinfo)
@@ -942,16 +1072,16 @@ class CMDDJ(loader.Module):
                 )
                 os.remove("chatphoto.jpg")
             except Exception:
-                await chatinfo.edit(self.strings("rpc_error", chatinfo))
+                await utils.answer(chatinfo, self.strings("rpc_error", chatinfo))
                 await chatinfo.delete()
         else:
-            await chatinfo.edit(self.strings("not_a_chat", chatinfo))
+            await utils.answer(chatinfo, self.strings("not_a_chat", chatinfo))
             await chatinfo.delete()
 
     @loader.owner
     async def owncmd(self, message):
-        """Выводит список чатов, каналов и групп где вы владелец."""
-        await message.edit(self.strings("loading", message))
+        """Выводит список чатов, каналов и групп где вы владелец/админ."""
+        await utils.answer(message, self.strings("loading", message))
         
         count = 0
         msg = ""
@@ -965,9 +1095,9 @@ class CMDDJ(loader.Module):
                     msg += f'\n• {chat.title} <b>({chat_type})</b> | <code>{chat.id}</code>'
 
         if msg:
-            await message.edit(self.strings("own_list", message).format(count=count, msg=msg), parse_mode="html")
+            await utils.answer(message, self.strings("own_list", message).format(count=count, msg=msg), parse_mode="html")
         else:
-            await message.edit(self.strings("no_ownerships", message))
+            await utils.answer(message, self.strings("no_ownerships", message))
 
     @loader.owner
     async def unmutecmd(self, message):
@@ -976,7 +1106,7 @@ class CMDDJ(loader.Module):
             try:
                 args = message.raw_text.split(maxsplit=1)
                 if len(args) < 2:
-                    await message.edit(self.strings("no_user", message))
+                    await utils.answer(message, self.strings("no_user", message))
                     return
                 
                 user_id = int(args[1])
@@ -994,8 +1124,11 @@ class CMDDJ(loader.Module):
                     send_inline=True,
                     send_polls=True
                 )
-                self.muted.remove(user_id)
-                await message.edit(
+                try:
+                    self.muted.remove(user_id)
+                except:
+                    pass
+                await utils.answer(message,
                     self.strings("unmuted", message).format(
                         user_id=user_id,
                         first_name=first_name
@@ -1004,10 +1137,10 @@ class CMDDJ(loader.Module):
                 )
                 return
             except ValueError:
-                await message.edit(self.strings("no_user", message))
+                await utils.answer(message, self.strings("no_user", message))
                 return
             except Exception as e:
-                await message.edit(self.strings("rpc_error", message).format(error=e))
+                await utils.answer(message, self.strings("rpc_error", message).format(error=e))
                 return
         reply_message = await message.get_reply_message()
         user_id = reply_message.sender_id
@@ -1024,7 +1157,10 @@ class CMDDJ(loader.Module):
                 send_inline = True,
                 send_polls = True
             )
-            self.muted.remove(user_id)
+            try:
+                self.muted.remove(user_id)
+            except:
+                pass
             await message.client.send_message(
                 message.chat_id,
                 self.strings("unmuted", message).format(
@@ -1035,25 +1171,42 @@ class CMDDJ(loader.Module):
             )
             await message.delete()
         except UserAdminInvalidError:
-            await message.edit(self.strings("no_rights", message))
+            await utils.answer(message, self.strings("no_rights", message))
         except ChatAdminRequiredError:
-            await message.edit(self.strings("no_rights", message))
+            await utils.answer(message, self.strings("no_rights", message))
         except Exception as e:
-            await message.edit(self.strings("rpc_error", message).format(error=e))
+            await utils.answer(message, self.strings("rpc_error", message).format(error=e))
 
     @loader.owner
     async def mutecmd(self, message):
-        """Мут пользователя. Использование: .mute <reply | ID | username> <time> - мутит на определенное время (в минутах)."""
+        """Мут пользователя. Использование: .mute <reply | ID | username> <time> - мутит на определенное время."""
         args = message.raw_text.split(maxsplit=2)
 
         if len(args) < 2:
-            await message.edit(self.strings("invalid_args", message))
+            await utils.answer(message, self.strings("invalid_args", message))
             return
         try:
-            mute_time = int(args[-1])
+            unit = args[-1][-1]
+            mute_time = int(args[-1][:-1])
             duration = timedelta(minutes=mute_time)
+            if unit == "m":
+                duration = timedelta(minutes=mute_time)
+                unit = self.strings("minutes", message)
+            elif unit == "h":
+                duration = timedelta(hours=mute_time)
+                unit = self.strings("hours", message)
+            elif unit == "d":
+                duration = timedelta(days=mute_time)
+                unit = self.strings("days", message)
+            elif unit == "w":
+                duration = timedelta(weeks=mute_time)
+                unit = self.strings("weeks", message)
+            else:
+                await utils.answer(message, self.strings("invalid_args", message))
+                return
+
         except ValueError:
-            await message.edit(self.strings("invalid_args", message))
+            await utils.answer(message, self.strings("invalid_args", message))
             return
 
         user_id = None
@@ -1070,10 +1223,10 @@ class CMDDJ(loader.Module):
                 user_id = user.id
                 first_name = user.first_name
             except Exception:
-                await message.edit(self.strings("no_user", message))
+                await utils.answer(message, self.strings("no_user", message))
                 return
         else:
-            await message.edit(self.strings("no_user", message))
+            await utils.answer(message, self.strings("no_user", message))
             return
 
         try:
@@ -1091,15 +1244,15 @@ class CMDDJ(loader.Module):
                 until_date=duration
             )
 
-            await message.edit(
+            await utils.answer(message,
                 self.strings("muted", message).format(
                     user_id=user_id,
                     first_name=first_name,
-                    mute_time=mute_time
+                    mute_time=mute_time,
+                    unit=unit
                 ),
                 parse_mode="html"
             )
-
             await asyncio.sleep(duration.total_seconds())
             if user_id in self.muted:
                 await message.client.send_message(
@@ -1110,20 +1263,23 @@ class CMDDJ(loader.Module):
                     ),
                     parse_mode="html"
                 )
-                self.muted.remove(user_id)
+                try:
+                    self.muted.remove(user_id)
+                except:
+                    pass
 
         except UserAdminInvalidError:
-            await message.edit(self.strings("no_rights", message))
+            await utils.answer(message, self.strings("no_rights", message))
         except ChatAdminRequiredError:
-            await message.edit(self.strings("no_rights", message))
+            await utils.answer(message, self.strings("no_rights", message))
         except Exception as e:
-            await message.edit(self.strings("rpc_error", message).format(error=e))
+            await utils.answer(message, self.strings("rpc_error", message).format(error=e))
 
     @loader.owner
     async def kickallcmd(self, event):
         """Удаляет всех пользователей из чата."""
         user = [i async for i in event.client.iter_participants(event.to_id.channel_id)]
-        await event.edit(
+        await utils.answer(event, 
             self.strings("kick_all", event).format(
             user_count=len(user)
             )
@@ -1137,7 +1293,7 @@ class CMDDJ(loader.Module):
                 except:
                     pass
             except FloodWaitError as e:
-                await event.edit(self.strings("flood_wait", event).format(seconds=e.seconds))
+                await utils.answer(event, self.strings("flood_wait", event).format(seconds=e.seconds))
 
     @loader.owner
     async def stealcmd(self, event):
@@ -1163,7 +1319,7 @@ class CMDDJ(loader.Module):
                 user = [
                     i async for i in event.client.iter_participants(event.to_id.channel_id)
                 ]
-            await event.edit(
+            await utils.answer(event, 
                 self.strings("steal_complete", event).format(count=len(user))
             )
             await event.delete()
@@ -1204,16 +1360,16 @@ class CMDDJ(loader.Module):
                             print(f"{str(e)}")
                         await asyncio.sleep(2)
             except UsersTooMuchError:
-                await event.edit(self.strings("users_too_much", event))
+                await utils.answer(event, self.strings("users_too_much", event))
                 return
         else:
-            await event.edit(self.strings("invalid_args", event))
+            await utils.answer(event, self.strings("invalid_args", event))
 
     @loader.owner
     async def userscmd(self, message):
         """Выводит список участников."""
         if not message.is_private:
-            await message.edit(self.strings("loading", message))
+            await utils.answer(message, self.strings("loading", message))
             info = await message.client.get_entity(message.chat_id)
             title = info.title or self.strings("this_chat")
             users = await message.client.get_participants(message.chat_id)
@@ -1232,10 +1388,10 @@ class CMDDJ(loader.Module):
                 mentions += self.strings("users_not_found")
 
             try:
-                await message.edit(mentions)
+                await utils.answer(message, mentions)
                 return
             except MessageTooLongError:
-                await message.edit(self.strings("large_chat_loading"))
+                await utils.answer(message, self.strings("large_chat_loading"))
                 file = open("userslist.md", "w+")
                 file.write(mentions)
                 file.close()
@@ -1247,13 +1403,13 @@ class CMDDJ(loader.Module):
                 await message.delete()
                 return
         else:
-            return await message.edit(self.strings("not_a_chat"), message)
+            return await utils.answer(message, self.strings("not_a_chat"), message)
 
     @loader.owner
     async def adminscmd(self, message):
         """Выводит список всех админов в чате (без учёта ботов)."""
         if not message.is_private:
-            await message.edit(self.strings("loading", message))
+            await utils.answer(message, self.strings("loading", message))
             info = await message.client.get_entity(message.chat_id)
             title = info.title or "this chat"
 
@@ -1268,9 +1424,9 @@ class CMDDJ(loader.Module):
                     mentions += self.strings("deleted_account").format(user_id=user.id)
 
             try:
-                await message.edit(mentions)
+                await utils.answer(message, mentions)
             except MessageTooLongError:
-                await message.edit(self.strings("too_many_admins"))
+                await utils.answer(message, self.strings("too_many_admins"))
                 with open("adminlist.md", "w+") as file:
                     file.write(mentions)
                 await message.client.send_file(message.chat_id,
@@ -1280,13 +1436,13 @@ class CMDDJ(loader.Module):
                 os.remove("adminlist.md")
                 await message.delete()
         else:
-            return await message.edit(self.strings("not_a_chat"), message)
+            return await utils.answer(message, self.strings("not_a_chat"))
 
     @loader.owner
     async def botscmd(self, message):
         """Выводит список всех ботов в чате."""
         if not message.is_private:
-            await message.edit(self.strings("loading", message))
+            await utils.answer(message, self.strings("loading", message))
 
             info = await message.client.get_entity(message.chat_id)
             title = info.title if info.title else "this chat"
@@ -1301,9 +1457,9 @@ class CMDDJ(loader.Module):
                     mentions += self.strings("deleted_bot").format(user_id=user.id)
 
             try:
-                await message.edit(mentions, parse_mode="html")
+                await utils.answer(message, mentions, parse_mode="html")
             except MessageTooLongError:
-                await message.edit(self.strings("too_many_bots"))
+                await utils.answer(message, self.strings("too_many_bots"))
                 file = open("botlist.md", "w+")
                 file.write(mentions)
                 file.close()
@@ -1314,7 +1470,7 @@ class CMDDJ(loader.Module):
                 os.remove("botlist.md")
                 await message.delete()
         else:
-            return await message.edit(self.strings("not_a_chat", message))
+            return await utils.answer(message, self.strings("not_a_chat", message))
 
     @loader.owner
     async def unbancmd(self, message):
@@ -1402,13 +1558,13 @@ class CMDDJ(loader.Module):
     async def invitecmd(self, message):
         """Пригласить пользователя/бота в чат. Использование: .invite <id/reply>."""
         if message.is_private:
-            return await message.edit(self.strings("not_a_chat", message))
+            return await utils.answer(message, self.strings("not_a_chat", message))
 
         args = utils.get_args_raw(message)
         reply = await message.get_reply_message()
         
         if not args and not reply:
-            await message.edit(self.strings("invalid_args", message))
+            await utils.answer(message, self.strings("invalid_args", message))
             return
 
         try:
@@ -1430,20 +1586,25 @@ class CMDDJ(loader.Module):
                                 users=[user.id]
                             ))
             else:
-                await message.edit(self.strings("chat_type_error", message))
-            await message.edit(self.strings("invite_success", message))
+                await utils.answer(message, self.strings("chat_type_error", message))
+            await utils.answer(message, self.strings("invite_success", message))
             return
 
         except ValueError:
             m = self.strings("no_user", message)
+            await utils.answer(message, m)
         except UserIdInvalidError:
             m = self.strings("no_user", message)
+            await utils.answer(message, m)
         except UserPrivacyRestrictedError:
             m = self.strings("privacy_settings_error", message)
+            await utils.answer(message, m)
         except UserNotMutualContactError:
             m = self.strings("privacy_settings_error", message)
+            await utils.answer(message, m)
         except ChatAdminRequiredError:
             m = self.strings("no_rights", message)
+            await utils.answer(message, m)
         except UserBotError:
             group = await message.client.get_entity(message.chat_id)
             if args:
@@ -1467,13 +1628,16 @@ class CMDDJ(loader.Module):
             ))
         except ChatWriteForbiddenError:
             m = self.strings("no_rights", message)
+            await utils.answer(message, m)
         except ChannelPrivateError:
             m = self.strings("no_rights", message)
+            await utils.answer(message, m)
         except InputUserDeactivatedError:
             m = self.strings("deleted_account", message)
+            await utils.answer(message, m)
         except YouBlockedUserError:
             m = self.strings("blocked_contact", message)
-        await message.edit(m)
+            await utils.answer(message, m)
         return
 
     @loader.owner
@@ -1509,9 +1673,9 @@ class CMDDJ(loader.Module):
                     return
 
         if removed_count == 0:
-            await edit_message.edit(self.strings("no_deleted_accounts", message))
+            await utils.answer(message, self.strings("no_deleted_accounts", message))
         else:
-            await edit_message.edit(self.strings("kicked_deleted_accounts", message).format(count=removed_count))
+            await utils.answer(message, self.strings("kicked_deleted_accounts", message).format(count=removed_count))
 
     @loader.owner
     async def wipecmd(self, message):
@@ -1521,7 +1685,7 @@ class CMDDJ(loader.Module):
             async for msg in message.client.iter_messages(chat, from_user="me"):
                 await msg.delete()
         else:
-            await message.edit(self.strings("not_a_chat", message))
+            await utils.answer(message, self.strings("not_a_chat", message))
 
     @loader.owner
     async def _is_owner(self, chat_id):
@@ -1580,7 +1744,7 @@ class CMDDJ(loader.Module):
             )
         except Exception:
             msg_info = None
-            await event.edit(self.strings("rpc_error", event))
+            await utils.answer(event, self.strings("rpc_error", event))
         first_msg_valid = (
             True
             if msg_info and msg_info.messages and msg_info.messages[0].id == 1
@@ -1678,7 +1842,7 @@ class CMDDJ(loader.Module):
                 )
                 admins = participants_admins.count if participants_admins else None
             except Exception:
-                await event.edit(self.strings("rpc_error", event))
+                await utils.answer(event, self.strings("rpc_error", event))
         if bots_list:
             for bot in bots_list:
                 bots += 1

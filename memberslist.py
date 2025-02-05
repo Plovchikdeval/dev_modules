@@ -14,9 +14,8 @@ Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 Inter
 
 # meta developer: @kshmods
 
-import asyncio
 import tempfile
-import os
+
 from .. import loader, utils
 
 
@@ -30,17 +29,17 @@ class MembersListMod(loader.Module):
     async def mlistcmd(self, message):
         """Get the members list of multiple chats and send it as a txt file."""
         args = utils.get_args_raw(message)
+        await message.delete()
         if not args:
             return await utils.answer(message, "Please specify chat IDs separated by spaces.")
         
         chat_ids = args.split()
-        all_members_set = ()
+        all_members_list = []
 
         for chat_id in chat_ids:
             try:
                 members_list = await self.get_members_list(int(chat_id))
-                all_members_set = set(all_members_set)
-                all_members_set = all_members_set.union(members_list)
+                all_members_list.extend(members_list)
             except ValueError:
                 await utils.answer(message, f"Invalid chat ID: {chat_id}")
                 return
@@ -49,23 +48,20 @@ class MembersListMod(loader.Module):
                 return
 
         with tempfile.NamedTemporaryFile("w", delete=False, suffix=".txt", encoding="utf-8") as temp_file:
-            for member in sorted(all_members_set):
+            for member in all_members_list:
                 temp_file.write(member + '\n')
             temp_file_path = temp_file.name
 
         await self.client.send_file(
             message.chat_id,
             temp_file_path,
-            caption=f"Here is the members list. Total users: {len(all_members_set)}",
+            caption=f"Here is the members list. Total users: {len(all_members_list)}",
             reply_to=message.reply_to_msg_id,
         )
-        await message.delete()
-        asyncio.sleep(10)
-        await os.remove(temp_file_path)
 
     async def get_members_list(self, chat_id):
         members = await self.client.get_participants(chat_id)
-        members_set = set()
+        members_list = []
 
         for member in members:
             user_id = member.id
@@ -73,7 +69,6 @@ class MembersListMod(loader.Module):
             last_name = member.last_name or ''
             username = member.username or ''
             phone = member.phone if member.id != (await self.client.get_me()).id and member.phone else ''
-            member_info = f"{user_id} | {first_name} | {last_name} | {username} | {phone}"
-            members_set.add(member_info)
+            members_list.append(f"{user_id}, {first_name}, {last_name}, {username}, {phone}")
 
-        return members_set
+        return members_list
