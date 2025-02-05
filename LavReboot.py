@@ -1,14 +1,21 @@
-__version__ = (0, 0, 3)
+__version__ = (0, 1, 0)
 
 """
-	█ █▀█ █▄█ █ ▄█   █▀▄ █▀█ █▀▀
- ▄▀ █▄█ █ █ █▀ █   █▄▀ █▄█ ██▄
- (C) 2024 t.me/undef1n3dd
- Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+888    d8P   .d8888b.  888    888     888b     d888  .d88888b.  8888888b.   .d8888b.  
+888   d8P   d88P  Y88b 888    888     8888b   d8888 d88P" "Y88b 888  "Y88b d88P  Y88b 
+888  d8P    Y88b.      888    888     88888b.d88888 888     888 888    888 Y88b.      
+888d88K      "Y888b.   8888888888 d8b 888Y88888P888 888     888 888    888  "Y888b.   
+8888888b        "Y88b. 888    888 Y8P 888 Y888P 888 888     888 888    888     "Y88b. 
+888  Y88b         "888 888    888     888  Y8P  888 888     888 888    888       "888 
+888   Y88b  Y88b  d88P 888    888 d8b 888   "   888 Y88b. .d88P 888  .d88P Y88b  d88P 
+888    Y88b  "Y8888P"  888    888 Y8P 888       888  "Y88888P"  8888888P"   "Y8888P" 
+                                                           
+(C) 2025 t.me/kshmods
+Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
 """
 
 # scope: hikka_min 1.3.3
-# meta developer: @devjmodules
+# meta developer: @kshmods
 # requires: subprocess psutil signal
 
 import logging
@@ -47,6 +54,7 @@ class LavReboot(loader.Module):
 				pass
 		return None
 
+	@loader.sudo
 	@loader.command(en_doc="Restart", ru_doc="Перезагрузить")
 	async def lhrestart(self, message: Message):
 		platform = utils.get_named_platform()
@@ -60,7 +68,7 @@ class LavReboot(loader.Module):
 		found_process = self.find_process(user, process)
 
 		if found_process:
-			await self.invoke(command="restart", args=["-f"], message=message, edit=True)
+			await self.invoke(command="restart", args="-f", message=message)
 			pid = found_process.info['pid']
 			try:
 				os.kill(pid, signal.SIGABRT)

@@ -13,10 +13,11 @@ tts
 irisfarm
 bfg
 encmod
-send
 memberslist
 stats
 weather
 screenspam
 p2g
 InlineButtons
+ShotModule
+UpgradedNeofetch
