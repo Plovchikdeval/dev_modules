@@ -137,9 +137,9 @@ class ChatModule(loader.Module):
         "hours": "часов",
         "days": "дней",
         "weeks": "недели",
-        "get_rights_header": "<b>Ваши права в этом чате:</b>\n\n",
+        "get_rights_header": "<b>Права <a href='tg://user?id={id}'>{name}</a> в этом чате:</b>\n\n",
         "admin_rights": "🔹 <u>Права администратора:</u>\n",
-        "not_admin": "🔹 <u>Права администратора:</u> ❌ Вы не администратор\n",
+        "not_admin": "🔹 <u>Права администратора:</u> ❌ <a href='tg://user?id={id}'>{name}</a> не администратор\n",
         "restricts": "\n🔹 <u>Ограничения:</u>\n",
         "no_restricts": "\n🔹 <u>Ограничения:</u> ✅ Нет ограничений\n",
         "invalid_number": "❗ Укажите корректное количество сообщений для удаления.",
@@ -156,8 +156,8 @@ class ChatModule(loader.Module):
         "no_restricts": "\n🔹 <u>Restrictions:</u> ✅ No restrictions\n",
         "admin_rights": "🔹 <u>Admin rights:</u>\n",
         "failed_get_rights": "<b>Your rights cannot be determined in this chat.</b>",
-        "get_rights_header": "<b>Your rights in this chat:</b>\n\n",
-        "not_admin": "🔹 <u>Admin rights:</u> ❌ You are not an admin\n",
+        "get_rights_header": "<b><a href='tg://user?id={id}'>{name}</a>'s rights in this chat:</b>\n\n",
+        "not_admin": "🔹 <u>Admin rights:</u> ❌ <a href='tg://user?id={id}'>{name}</a> is not an admin\n",
         "not_a_chat": "<emoji document_id=5312526098750252863>❌</emoji> <b>The command cannot be run in private messages.</b>",
         "no_rights": "<emoji document_id=5318764049121420145>🫤</emoji> <b>I don't have enough rights.</b>",
         "no_user": "<emoji document_id=5312383351217201533>⚠️</emoji> <b>You did not specify a user.</b>",
@@ -345,41 +345,132 @@ class ChatModule(loader.Module):
         )
 
     @loader.command(
-        ru_doc="| Проверить ваши права в текущем чате."
+        ru_doc="<reply/username/id> | Проверить права в текущем чате."
     )
-    async def myrights(self, message):
-        """| Check your rights in the current chat."""
+    async def rights(self, message):
+        """<reply/username/id> | Check rights in the current chat."""
+        args = utils.get_args_raw(message)
+        reply = await message.get_reply_message()
         chat = await message.get_chat()
-        user = await message.get_sender()
         chat_id = message.chat_id
+        admin_rights = [
+            "change_info",
+            "delete_messages",
+            "ban_users",
+            "invite_users",
+            "pin_messages",
+            "manage_call",
+            "add_admins",
+            "anonymous",
+            "edit_messages",
+            "manage_topics",
+            "post_messages",
+        ]
 
-        if not chat or not chat_id:
-            return await utils.answer(message, self.strings("not_a_chat", message))
+        banned_rights = [
+            "send_messages",
+            "send_media",
+            "send_photos",
+            "send_videos",
+            "send_roundvideos",
+            "send_audios",
+            "send_voices",
+            "send_docs",
+            "send_stickers",
+            "send_gifs",
+            "embed_links",
+            "send_polls",
+            "send_games",
+            "send_inline",
+        ]
+        if not args:
+            if not reply:
+                if not chat or not chat_id:
+                    return await utils.answer(message, self.strings("not_a_chat", message))
 
-        if not hasattr(chat, "admin_rights") and not hasattr(chat, "banned_rights"):
-            return await utils.answer(message, self.strings('failed_get_rights', message))
+                if not hasattr(chat, "admin_rights") and not hasattr(chat, "banned_rights"):
+                    return await utils.answer(message, self.strings('failed_get_rights', message))
 
+                admin_rights = getattr(chat, "admin_rights", None)
+                banned_rights = getattr(chat, "banned_rights", None)
 
-        admin_rights = getattr(chat, "admin_rights", None)
-        banned_rights = getattr(chat, "banned_rights", None)
+                result = self.strings('get_rights_header').format(id=(await self.client.get_me()).id, name=f"{(await self.client.get_me()).first_name or ''} {(await self.client.get_me()).last_name or ''}")
 
-        result = self.strings('get_rights_header')
+                if admin_rights and isinstance(admin_rights, ChatAdminRights):
+                    result += self.strings('admin_rights')
+                    for right, value in admin_rights.to_dict().items():
+                        result += f"  - {right}: {'✅' if value else '❌'}\n"
+                else:
+                    result += self.strings('not_admin').format(id=(await self.client.get_me()).id, name=f"{(await self.client.get_me()).first_name or ''} {(await self.client.get_me()).last_name or ''}")
 
-        if admin_rights and isinstance(admin_rights, ChatAdminRights):
-            result += self.strings('admin_rights')
-            for right, value in admin_rights.to_dict().items():
-                result += f"  - {right}: {'✅' if value else '❌'}\n"
+                if banned_rights and isinstance(banned_rights, ChatBannedRights):
+                    result += self.strings('restricts')
+                    for right, value in banned_rights.to_dict().items():
+                        result += f"  - {right}: {'❌' if value else '✅'}\n"
+                else:
+                    result += self.strings('no_restricts')
+
+                await utils.answer(message, result)
+            else:
+                user = await reply.get_sender()
+                if not chat or not chat_id:
+                    return await utils.answer(message, self.strings("not_a_chat", message))
+                permissions = await self.client.get_permissions(chat, user)
+
+                result = self.strings('get_rights_header').format(id=user.id, name=f"{user.first_name or ''} {user.last_name or ''}")
+
+                if permissions.has_default_permissions:
+                    result += self.strings("not_admin").format(id=user.id, name=f"{user.first_name or ''} {user.last_name or ''}")
+                else:
+                    result += self.strings('admin_rights')
+                    for right in admin_rights:
+                        has_permission = getattr(permissions, right, False)
+                        result += f"  - {right}: {'✅' if has_permission else '❌'}\n"
+                restricts = ""
+                for right in banned_rights:
+                    has_permission = getattr(permissions, right, False)
+                    if has_permission:
+                        restricts += f"  - {right}: {'❌' if has_permission else '✅'}\n"
+                if restricts == "":
+                    result += self.strings("no_restricts")
+                else:
+                    result += self.strings("restricts")
+                    result += restricts
+
+                await utils.answer(message, result)
         else:
-            result += self.strings('not_admin')
+            args = utils.get_args_raw(message).split()
+            user = await self.client.get_entity(int(args[0]) if args[0].isdigit() else args[0])
+            if not chat or not chat_id:
+                return await utils.answer(message, self.strings("not_a_chat", message))
+            try:
+                permissions = await self.client.get_permissions(chat, user)
+            except UserNotParticipantError:
+                return await utils.answer(message, self.strings("no_user", message))
+            if permissions.has_left:
+                return await utils.answer(message, self.strings("no_user", message))
 
-        if banned_rights and isinstance(banned_rights, ChatBannedRights):
-            result += self.strings('restricts')
-            for right, value in banned_rights.to_dict().items():
-                result += f"  - {right}: {'❌' if value else '✅'}\n"
-        else:
-            result += self.strings('no_restricts')
+            result = self.strings('get_rights_header').format(id=user.id, name=f"{user.first_name or ''} {user.last_name or ''}")
 
-        await utils.answer(message, result)
+            if permissions.has_default_permissions:
+                result += self.strings("not_admin").format(id=user.id, name=f"{user.first_name or ''} {user.last_name or ''}")
+            else:
+                result += self.strings('admin_rights')
+                for right in admin_rights:
+                    has_permission = getattr(permissions, right, False)
+                    result += f"  - {right}: {'✅' if has_permission else '❌'}\n"
+            restricts = ""
+            for right in banned_rights:
+                has_permission = getattr(permissions, right, False)
+                if has_permission:
+                    restricts += f"  - {right}: {'❌' if has_permission else '✅'}\n"
+            if restricts == "":
+                result += self.strings("no_restricts")
+            else:
+                result += self.strings("restricts")
+                result += restricts
+
+            await utils.answer(message, result)
 
     @loader.command(
         ru_doc="<reply> [role] | Повышение пользователя до администратора."
@@ -1134,10 +1225,10 @@ class ChatModule(loader.Module):
             await utils.answer(message, self.strings("no_ownerships", message))
 
     @loader.command(
-        ru_doc="<id/reply> | Размучивает пользователя."
+        ru_doc="<id/username/reply> | Размучивает пользователя."
     )
     async def unmute(self, message):
-        """<id/reply> | Unmutes the user."""
+        """<id/username/reply> | Unmutes the user."""
         if not message.is_reply:
             try:
                 args = message.raw_text.split(maxsplit=1)
@@ -1145,13 +1236,13 @@ class ChatModule(loader.Module):
                     await utils.answer(message, self.strings("no_user", message))
                     return
                 
-                user_id = int(args[1])
-                user = await message.client.get_entity(user_id)
+                user = int(args[1]) if args[1].isdigit() else args[1]
+                user = await message.client.get_entity(user)
                 first_name = user.first_name or self.strings("unknown_user", message)
                 
                 await message.client.edit_permissions(
                     entity=message.chat_id,
-                    user=user_id,
+                    user=user.id,
                     send_messages=True,
                     send_media=True,
                     send_stickers=True,
@@ -1161,12 +1252,12 @@ class ChatModule(loader.Module):
                     send_polls=True
                 )
                 try:
-                    self.muted.remove(user_id)
+                    self.muted.remove(user.id)
                 except:
                     pass
                 await utils.answer(message,
                     self.strings("unmuted", message).format(
-                        user_id=user_id,
+                        user_id=user.id,
                         first_name=first_name
                     ),
                     parse_mode="html"
@@ -1197,15 +1288,7 @@ class ChatModule(loader.Module):
                 self.muted.remove(user_id)
             except:
                 pass
-            await message.client.send_message(
-                message.chat_id,
-                self.strings("unmuted", message).format(
-                    user_id=user_id,
-                    first_name=first_name
-                ),
-                reply_to=reply_message.id
-            )
-            await message.delete()
+            await utils.answer(message, self.strings("unmuted", message).format(user_id=user_id, first_name=first_name))
         except UserAdminInvalidError:
             await utils.answer(message, self.strings("no_rights", message))
         except ChatAdminRequiredError:
@@ -1219,8 +1302,9 @@ class ChatModule(loader.Module):
     async def mute(self, message):
         """<reply/ID/username> <time> | Mutes the user for a certain time."""
         args = message.raw_text.split(maxsplit=2)
+        reply = await message.get_reply_message()
 
-        if len(args) < 2:
+        if len(args) < 3 and not reply:
             await utils.answer(message, self.strings("invalid_args", message))
             return
         try:
@@ -1242,20 +1326,16 @@ class ChatModule(loader.Module):
             else:
                 await utils.answer(message, self.strings("invalid_args", message))
                 return
-
         except ValueError:
             await utils.answer(message, self.strings("invalid_args", message))
             return
-
-        user_id = None
-        first_name = self.strings("unknown_user", message)
 
         if message.is_reply:
             reply_message = await message.get_reply_message()
             user_id = reply_message.sender_id
             first_name = reply_message.sender.first_name
         elif len(args) == 3:
-            user_identifier = args[1]
+            user_identifier = int(args[1]) if args[1].isdigit() else args[1]
             try:
                 user = await message.client.get_entity(user_identifier)
                 user_id = user.id
