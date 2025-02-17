@@ -1,5 +1,5 @@
-__version__ = (8, 0, 0)
-# change-log: ADD NEW MODELS! MORE DETAILS IN .dgmodels
+__version__ = (9, 0, 0)
+# change-log: Fix image models.
 
 """
 888    d8P   .d8888b.  888    888     888b     d888  .d88888b.  8888888b.   .d8888b.  
@@ -18,7 +18,7 @@ Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 Inter
 # scope: hikka_min 1.3.3
 # meta developer: @kshmods
 # meta banner: https://kappa.lol/nfF_A
-# requires: requests
+# requires: requests aiofiles
 
 import logging
 import io
@@ -48,7 +48,7 @@ class DevGPT(loader.Module):
 		"query_err": "<blockquote><emoji document_id=5208434048753484584>⛔</emoji> <b>The request cannot be empty!</b></blockquote>",
 		"server_err": "<blockquote><emoji document_id=5881702736843511327>⚠️</emoji> <b>Server error: {error}</b></blockquote>",
 		"image_err": "<emoji document_id=5881702736843511327>⚠️</emoji> <b>Error generating image: {error}</b>",
-		"models_list": "<blockquote><emoji document_id=5879841310902324730>😀</emoji><b>Text</b></blockquote>\n\n<blockquote>{txt_models}</blockquote>\n\n<blockquote><emoji document_id=5775949822993371030>🖼</emoji> <b>Images</b></blockquote>\n\n<blockquote>{img_models}</blockquote>\n\n<blockquote><emoji document_id=5343545593807521643>❤️‍🔥</emoji><emoji document_id=5220081566268536865>😮</emoji><b>New text models: </b></blockquote>\n\n<blockquote>{neeew_model}</blockquote>",
+		"models_list": "<blockquote><emoji document_id=5879841310902324730>😀</emoji><b>Text</b></blockquote>\n\n<blockquote>{txt_models}</blockquote>\n\n<blockquote><emoji document_id=5775949822993371030>🖼</emoji> <b>Images</b></blockquote>\n\n<blockquote>{img_models}</blockquote>",
 		"model_not_found": "<blockquote><emoji document_id=5208434048753484584>⛔</emoji> <b>Model not found! List of available models: {prefix}dgmodels</b></blockquote>",
 		"no_url": "No image URL received",
 		"no_server_respond": "No response from the server",
@@ -68,7 +68,7 @@ class DevGPT(loader.Module):
 		"query_err": "<blockquote><emoji document_id=5208434048753484584>⛔</emoji> <b>Запит не може бути порожнім!</b></blockquote>",
 		"server_err": "<blockquote><emoji document_id=5881702736843511327>⚠️</emoji> <b>Помилка сервера: {error}</b></blockquote>",
 		"image_err": "<emoji document_id=5881702736843511327>⚠️</emoji> <b>Помилка при генерації зображення: {error}</b>",
-		"models_list": "<blockquote><emoji document_id=5879841310902324730>😀</emoji><b>Текст</b></blockquote>\n\n<blockquote>{txt_models}</blockquote>\n\n<blockquote><emoji document_id=5775949822993371030>🖼</emoji> <b>Зображення</b></blockquote>\n\n<blockquote>{img_models}</blockquote>\n\n<blockquote><emoji document_id=5343545593807521643>❤️‍🔥</emoji><emoji document_id=5220081566268536865>😮</emoji><b>Нові текстові моделі: </b></blockquote>\n\n<blockquote>{neeew_model}</blockquote>",
+		"models_list": "<blockquote><emoji document_id=5879841310902324730>😀</emoji><b>Текст</b></blockquote>\n\n<blockquote>{txt_models}</blockquote>\n\n<blockquote><emoji document_id=5775949822993371030>🖼</emoji> <b>Зображення</b></blockquote>\n\n<blockquote>{img_models}\n</blockquote>",
 		"model_not_found": "<blockquote><emoji document_id=5208434048753484584>⛔</emoji> <b>Модель не знайдена! Список доступних моделей {prefix}dgmodels</b></blockquote>",
 		"no_url": "Не отримано URL зображення",
 		"no_server_respond": "Немає відповіді від сервера",
@@ -88,7 +88,7 @@ class DevGPT(loader.Module):
 		"query_err": "<blockquote><emoji document_id=5208434048753484584>⛔</emoji> <b>Запрос не может быть пустым!</b></blockquote>",
 		"server_err": "<blockquote><emoji document_id=5881702736843511327>⚠️</emoji> <b>Ошибка сервера: {error}</b></blockquote>",
 		"image_err": "<emoji document_id=5881702736843511327>⚠️</emoji> <b>Ошибка при генерации изображения: {error}</b>",
-		"models_list": "<blockquote><emoji document_id=5879841310902324730>😀</emoji><b>Текст</b></blockquote>\n\n<blockquote>{txt_models}</blockquote>\n\n<blockquote><emoji document_id=5775949822993371030>🖼</emoji> <b>Изображения</b></blockquote>\n\n<blockquote>{img_models}</blockquote>\n\n<blockquote><emoji document_id=5343545593807521643>❤️‍🔥</emoji><emoji document_id=5220081566268536865>😮</emoji><b>Новые текстовые модели: </b></blockquote>\n\n<blockquote>{neeew_model}</blockquote>",
+		"models_list": "<blockquote><emoji document_id=5879841310902324730>😀</emoji><b>Текст</b></blockquote>\n\n<blockquote>{txt_models}</blockquote>\n\n<blockquote><emoji document_id=5775949822993371030>🖼</emoji> <b>Изображения</b></blockquote>\n\n<blockquote>{img_models}</blockquote>",
 		"model_not_found": "<blockquote><emoji document_id=5208434048753484584>⛔</emoji> <b>Модель не найдена! Список доступных моделей {prefix}dgmodels</b></blockquote>",
 		"no_url": "Не получен URL изображения",
 		"no_server_respond": "Нет ответа от сервера",
@@ -102,11 +102,9 @@ class DevGPT(loader.Module):
 	async def client_ready(self, client, _):
 		# self.server_url = "https://api.vysssotsky.ru"
 		self.server_url = "https://api.vysssotsky.ru/"
-		self.server_url_images = "https://v1.vysssotsky.ru/v1/{model_name}/generate"
+		self.server_url_images = "https://api.vysssotsky.ru/v1/images/generate"
 		self.server_url_images_v2 = "https://v2.vysssotsky.ru/v1/generate"
 		self.additional_server_url = "http://146.19.48.160:25701/generate_image"
-		self.server_url_v2 = "http://77.223.103.8:9999/api/generate"
-		self.deep_url = "https://openrouter.ai/api/v1/chat/completions"
 
 		self.api_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
 
@@ -115,11 +113,9 @@ class DevGPT(loader.Module):
 		self._client = client
 		self.prefix = self._client.loader.get_prefix()
 
-		self.text_models = ["gpt-4", "gpt-4-turbo", "gpt-4o", "gpt-4o-mini", "o1-preview", "hermes-2-pro", "phi-2", "gemini-pro", "gemini-flash", "gemma-2b", "claude-3-haiku", "claude-3.5-sonnet", "blackboxai", "llava-13b", "openchat-3.5", "sonar-chat", "german-7b", "any-uncensored"]
-		self.text_models_2 = ["gemma2", "mistral", "dolphin-phi", "openchat", "phi4", "llama3.2", "deepseek-coder-v2"]
-		self.image_models = ["sd-3", "flux-pro", "flux-realism", "flux-anime", "flux-disney", "flux-pixel", "flux-4o", "any-dark", "flux"]
+		self.text_models = ["evil", "glm-4", "gpt-4", "gpt-4o", "gpt-4o-mini", "mixtral-8x7b", "mistral-nemo", "hermes-2-dpo", "gemini-1.5-flash", "gemini-2.0-flash", "claude-3-haiku", "blackboxai", "blackboxai-pro", "command-r", "command-r-plus", "command-r7b", "qwen-2.5-coder-32b", "qwq-32b", "qvq-72b", "deepseek-chat", "deepseek-r1", "dbrx-instruct"]
+		self.image_models = ["sdxl-turbo", "sd-3.5", "flux", "flux-pro", "flux-dev", "flux-schnell", "dall-e-3", "midjourney"]
 		self.additional_image_models = ["anything-v5", "dreamshaper-v6", "dreamshaper-v5", "meina-v9"]
-		self.deepseek = ["deepseek-r1"]
 
 	async def generate_text(self, message, args):
 		model = args.split()[0]
@@ -153,54 +149,6 @@ class DevGPT(loader.Module):
 							await utils.answer(message, self.strings("server_err").format(error=f"HTTP {response.status}"))
 			except Exception as e:
 				await utils.answer(message, self.strings("server_err").format(error=str(e)))
-
-		elif model in self.text_models_2:
-			try:
-				data = {
-					"model": model,
-					"prompt": content,
-					"stream": False
-				}
-				headers = {"Content-Type": "application/json"}
-
-				async with aiohttp.ClientSession() as session:
-					async with session.post(self.server_url_v2, headers=headers, json=data) as response:
-						response.raise_for_status()
-
-						if response.status == 200:
-							data = await response.json()
-							answer = data.get("response", self.strings("no_server_respond"))
-							answer = f"<blockquote>{answer}</blockquote>"
-
-							await utils.answer(message, answer + self.strings("quest").format(args=content))
-						else:
-							await utils.answer(message, self.strings("server_err").format(error=f"HTTP {response.status_code}"))
-			except Exception as e:
-				await utils.answer(message, self.strings("server_err").format(error=str(e)))
-			
-		elif model in self.deepseek:
-			try:
-				data = {
-					"model": "deepseek-r1:8b",
-					"prompt": content,
-					"stream": False
-				}
-				headers = {"Content-Type": "application/json"}
-
-				async with aiohttp.ClientSession() as session:
-					async with session.post(self.server_url_v2, headers=headers, json=data) as response:
-						response.raise_for_status()
-
-						if response.status == 200:
-							data = await response.json()
-							answer = data.get("response", self.strings("no_server_respond"))
-							answer = f"<blockquote>{answer}</blockquote>"
-
-							await utils.answer(message, answer + self.strings("quest").format(args=content))
-						else:
-							await utils.answer(message, self.strings("server_err").format(error=f"HTTP {response.status_code}"))
-			except Exception as e:
-				await utils.answer(message, self.strings("server_err").format(error=str(e)))
 		else:
 			await utils.answer(message, self.strings("model_not_found").format(prefix=self.prefix))
 
@@ -215,7 +163,9 @@ class DevGPT(loader.Module):
 		if model in self.image_models:
 			try:
 				payload = {
-					"prompt": prompt
+					"model": model,
+					"prompt": prompt,
+					"response_format": "url"
 				}
 
 				async with aiohttp.ClientSession() as session:
@@ -250,7 +200,7 @@ class DevGPT(loader.Module):
 
 									try:
 										image_v2 = json.loads(image_v2)
-										image_v2_url = image_v2.get("link")
+										image_v2_url = image_v2.get("url")
 									except json.JSONDecodeError:
 										image_v2_url = image_v2.strip()
 
@@ -323,11 +273,9 @@ class DevGPT(loader.Module):
 	async def dgmodels(self, message: Message):
 		"""Display models list"""
 		combined_list = self.image_models + self.additional_image_models
-		devsss = self.text_models_2 + self.deepseek
 		t_mdl = '\n'.join(self.text_models)
 		i_mdl = '\n'.join(combined_list)
-		dev = "\n".join(devsss)
-		await utils.answer(message, self.strings("models_list").format(txt_models=t_mdl, img_models=i_mdl, neeew_model=dev))
+		await utils.answer(message, self.strings("models_list").format(txt_models=t_mdl, img_models=i_mdl))
 
 	@loader.command(en_doc="Check for updates", ru_doc="Проверить обновления", ua_doc="Перевірити оновлення")
 	async def dgcheck(self, message: Message):
