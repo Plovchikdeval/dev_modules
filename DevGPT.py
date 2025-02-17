@@ -1,5 +1,5 @@
-__version__ = (10, 0, 0)
-# change-log: Delete no work image models.
+__version__ = (11, 0, 0)
+# change-log: Delete no work image models. Fix .dgmodels
 
 """
 888    d8P   .d8888b.  888    888     888b     d888  .d88888b.  8888888b.   .d8888b.  
