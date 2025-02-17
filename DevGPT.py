@@ -1,5 +1,5 @@
-__version__ = (11, 0, 0)
-# change-log: Delete no work image models. Fix .dgmodels
+__version__ = (12, 0, 0)
+# change-log: Delete no work image models. Fix .dgmodels Fix .dgcheck
 
 """
 888    d8P   .d8888b.  888    888     888b     d888  .d88888b.  8888888b.   .d8888b.  
@@ -110,6 +110,8 @@ class DevGPT(loader.Module):
 
 		self._client = client
 		self.prefix = self._client.loader.get_prefix()
+		
+		self.repo = "https://raw.githubusercontent.com/Plovchikdeval/dev_modules/main/"
 
 		self.text_models = ["evil", "glm-4", "gpt-4", "gpt-4o", "gpt-4o-mini", "mixtral-8x7b", "mistral-nemo", "hermes-2-dpo", "gemini-1.5-flash", "gemini-2.0-flash", "claude-3-haiku", "blackboxai", "blackboxai-pro", "command-r", "command-r-plus", "command-r7b", "qwen-2.5-coder-32b", "qwq-32b", "qvq-72b", "deepseek-chat", "deepseek-r1", "dbrx-instruct"]
 		self.image_models = ["sdxl-turbo", "sd-3.5", "flux", "flux-pro", "flux-dev", "flux-schnell", "dall-e-3", "midjourney"]
