@@ -248,9 +248,8 @@ class DevGPT(loader.Module):
 	@loader.command(en_doc="Display models list", ru_doc="Показать список моделей", ua_doc="Показати список моделей")
 	async def dgmodels(self, message: Message):
 		"""Display models list"""
-		combined_list = self.image_models + self.additional_image_models
 		t_mdl = '\n'.join(self.text_models)
-		i_mdl = '\n'.join(combined_list)
+		i_mdl = '\n'.join(self.image_models)
 		await utils.answer(message, self.strings("models_list").format(txt_models=t_mdl, img_models=i_mdl))
 
 	@loader.command(en_doc="Check for updates", ru_doc="Проверить обновления", ua_doc="Перевірити оновлення")
