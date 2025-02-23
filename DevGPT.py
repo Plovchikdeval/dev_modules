@@ -1,5 +1,5 @@
 __version__ = (13, 0, 0)
-# change-log: Delete no work image models. Fix .dgmodels Fix .dgcheck
+# change-log: Update command dgpt + dimg and add command setmodel
 
 """
 888    d8P   .d8888b.  888    888     888b     d888  .d88888b.  8888888b.   .d8888b.  
