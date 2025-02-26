@@ -1,3 +1,5 @@
+__version__=(1, 0, 1)
+
 from whoosh.index import create_in
 from whoosh.fields import TEXT, ID, Schema
 from whoosh.qparser import QueryParser, OrGroup
@@ -16,7 +18,7 @@ from ..inline.types import InlineCall
 from .. import utils, loader
 
 
-# meta developer: @limokanews
+# meta developer: @dev3quest
 # requires: whoosh
 
 logger = logging.getLogger("Limoka")
