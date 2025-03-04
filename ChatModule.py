@@ -1412,14 +1412,14 @@ class ChatModule(loader.Module):
                 return
 
     @loader.command(
-        ru_doc="<id/username/link> <nobot: OPTIONAL> | Добавляет людей и ботов с чата в чат."
+        ru_doc="<id> <nobot: OPTIONAL> | Добавляет людей и ботов с чата в чат."
     )
     async def steal(self, event):
-        """<id/username/link> <nobot: OPTIONAL> | Adds people from the chat to the chat."""
+        """<id> <nobot: OPTIONAL> | Adds people from the chat to the chat."""
         args = utils.get_args_raw(event).split(maxsplit=1)
         if not args:
             return await utils.answer(event, self.strings("invalid_args", event))
-        idschannelgroup = int(args[0]) if args[0].isdigit() else args[0]
+        idschannelgroup = int(args[0])
         nobot = "nobot" in args[1] if len(args) > 1 else False
         entity = await event.client.get_entity(idschannelgroup)
         participants = await event.client.get_participants(event.chat_id)
