@@ -189,7 +189,7 @@ class DevGPT(loader.Module):
 			}
 
 			async with aiohttp.ClientSession() as session:
-				async with session.post(f"{self.server_url}/v1/chat/completions", headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}, json=payload) as response:
+				async with session.post(f"{self.server_url}/v1/chat/completions", headers={"Authorization": f"Bearer {self.api_key}",  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36", "Content-Type": "application/json"}, json=payload) as response:
 					response.raise_for_status()
 					generation_time = round(time.time() - start_time, 2)
 					if response.status == 200:
@@ -215,7 +215,7 @@ class DevGPT(loader.Module):
 			}
 
 			async with aiohttp.ClientSession() as session:
-				async with session.post(self.server_url_images.format(model_name=self.config["default_image_model"]), headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}, data=json.dumps(payload)) as response:
+				async with session.post(self.server_url_images.format(model_name=self.config["default_image_model"]), headers={"Authorization": f"Bearer {self.api_key}", "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36", "Content-Type": "application/json"}, data=json.dumps(payload)) as response:
 					generation_time = round(time.time() - start_time, 2)
 					if response.status == 200:
 						data = await response.json()
@@ -240,7 +240,7 @@ class DevGPT(loader.Module):
 							"model": self.config["default_image_model"],
 							"prompt": prompt
 						}
-						async with session.post(self.server_url_images_v2, headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}, data=json.dumps(payload_v2)) as response_v2:
+						async with session.post(self.server_url_images_v2, headers={"Authorization": f"Bearer {self.api_key}", "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36", "Content-Type": "application/json"}, data=json.dumps(payload_v2)) as response_v2:
 							generation_time = round(time.time() - start_time, 2)
 							if response_v2.status == 200:
 								
