@@ -1,5 +1,5 @@
-__version__ = (14, 0, 0)
-# change-log: change api address
+__version__ = (15, 0, 0)
+# change-log: change api address + fix support for more country
 
 """
 888    d8P   .d8888b.  888    888     888b     d888  .d88888b.  8888888b.   .d8888b.  
@@ -160,7 +160,7 @@ class DevGPT(loader.Module):
 
 	async def client_ready(self, client, _):
 		# self.server_url = "https://api.kshteam.top"
-		self.server_url = "https://api.kshteam.top/"
+		self.server_url = "https://api.kshteam.top"
 		self.server_url_images = "https://api.kshteam.top/v1/images/generate"
 		self.server_url_images_v2 = "https://v2.vysssotsky.ru/v1/generate"
 		self.additional_server_url = "http://146.19.48.160:25701/generate_image"
