@@ -22,3 +22,4 @@ InlineButtons
 ShotModule
 UpgradedNeofetch
 aliasmanager
+Cfile
