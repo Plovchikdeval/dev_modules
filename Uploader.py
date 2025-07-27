@@ -61,7 +61,7 @@ class UploaderMod(loader.Module):
       self.config = loader.ModuleConfig(
           loader.ConfigValue(
               "token",
-              "None",
+              "kshmods-ve7t71",
               lambda: self.strings("_cfg_token"),
               validator=loader.validators.Hidden(),
               ),
@@ -121,7 +121,7 @@ class UploaderMod(loader.Module):
             async with aiohttp.ClientSession() as session:
                 form_data = aiohttp.FormData() 
                 form_data.add_field("file", file)
-                async with session.post("https://upload.kshteam.top/upload", headers=headers, data=form_data) as response:
+                async with session.post("https://files.nloveuser.ru/upload", headers=headers, data=form_data) as response:
                     response_text = await response.text()
 
                     if response.status == 403:
